@@ -135,6 +135,7 @@ public class RecipientRegistrationActivity extends AppCompatActivity {
                                 HashMap userInfo = new HashMap();
                                 userInfo.put("id",currentUserId);
                                 userInfo.put("name",fullName);
+                                userInfo.put("profilepictureurl", resultUri.toString());
                                 userInfo.put("email",email);
                                 userInfo.put("idNumber",idNumber);
                                 userInfo.put("bloodGroup",bloodGroup);
@@ -209,7 +210,7 @@ public class RecipientRegistrationActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-                                    Intent intent = new Intent(RecipientRegistrationActivity.this,MainActivity.class);
+                                    Intent intent = new Intent(RecipientRegistrationActivity.this,DisplayActivity.class);
                                     startActivity(intent);
                                     finish();
                                     loader.dismiss();

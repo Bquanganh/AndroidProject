@@ -15,6 +15,14 @@
         android:layout_width="95dp"
         android:layout_height="95dp"/>
     <TextView
+        android:id="@+id/nav_user_name"
+        android:text="Full Name"
+        android:textSize="18sp"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
         android:id="@+id/nav_user_email"
         android:text="eample@gmail.com"
         android:textSize="18sp"
@@ -22,14 +30,7 @@
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/nav_user_idNumber"
-        android:text="Id_Number"
-        android:textSize="18sp"
-        android:textColor="#fff"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

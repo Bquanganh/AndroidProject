@@ -208,7 +208,7 @@ public class Donor extends AppCompatActivity {
                                             }
                                         }
                                     });
-                                    Intent intent = new Intent(Donor.this,MainActivity.class);
+                                    Intent intent = new Intent(Donor.this,DisplayActivity.class);
                                     startActivity(intent);
                                     finish();
                                     loader.dismiss();
