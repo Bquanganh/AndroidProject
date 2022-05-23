@@ -8,11 +8,11 @@
     <item
         android:id="@+id/sentEmail"
         android:icon="@drawable/ic_check"
-        android:title="Donor Email"/>
+        android:title="Donor Emailed"/>
     <item
         android:id="@+id/compatible"
         android:icon="@drawable/compatible"
-        android:title="Home"/>
+        android:title="Compatible with me"/>
     <item
         android:title="Blood Groups">
         <menu>
@@ -62,6 +62,7 @@
                     android:title="Profile"/>
                 <item
                     android:id="@+id/notifications"
+                    android:visible="false"
                     android:icon="@drawable/ic_notifications"
                     android:title="Notifications"/>
                 <item

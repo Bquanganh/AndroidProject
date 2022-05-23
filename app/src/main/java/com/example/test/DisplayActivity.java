@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -58,9 +59,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
     private List<User> userList;
     private UserAdapter userAdapter;
 
-    public class CMAppGlideModule extends AppGlideModule{
 
-    }
 
 
 
@@ -157,6 +156,13 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
                         nav_user_image.setImageResource(R.drawable.profile);
                     }
 
+                    Menu nav_menu = nav_view.getMenu();
+
+                    if (type.equals("donor")){
+                        nav_menu.findItem(R.id.sentEmail).setTitle("Received Emails");
+                        nav_menu.findItem(R.id.notifications).setVisible(true);
+                    }
+
                 }
             }
 
@@ -169,6 +175,8 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
 
     }
 
+
+
     private void readDonors() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
         Query query = reference.orderByChild("type").equalTo("donor");
@@ -177,7 +185,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    User user = snapshot.getValue(User.class);
+                    User user = dataSnapshot.getValue(User.class);
                     userList.add(user);
                 }
                 userAdapter.notifyDataSetChanged();
@@ -205,7 +213,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    User user = snapshot.getValue(User.class);
+                    User user = dataSnapshot.getValue(User.class);
                     userList.add(user);
                 }
                 userAdapter.notifyDataSetChanged();
@@ -227,6 +235,65 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
+            case R.id.aplus:
+                Intent intent2 = new Intent(DisplayActivity.this, CategorySelectedActivity.class);
+                intent2.putExtra("group","A+");
+                startActivity(intent2);
+                break;
+
+            case R.id.aminus:
+                Intent intent3 = new Intent(DisplayActivity.this, CategorySelectedActivity.class);
+                intent3.putExtra("group","A-");
+                startActivity(intent3);
+                break;
+
+            case R.id.abplus:
+                Intent intent4 = new Intent(DisplayActivity.this, CategorySelectedActivity.class);
+                intent4.putExtra("group","AB+");
+                startActivity(intent4);
+                break;
+            case R.id.abminus:
+                Intent intent5 = new Intent(DisplayActivity.this, CategorySelectedActivity.class);
+                intent5.putExtra("group","AB-");
+                startActivity(intent5);
+                break;
+
+            case R.id.bplus:
+                Intent intent6 = new Intent(DisplayActivity.this, CategorySelectedActivity.class);
+                intent6.putExtra("group","B+");
+                startActivity(intent6);
+                break;
+
+            case R.id.bminus:
+                Intent intent7 = new Intent(DisplayActivity.this, CategorySelectedActivity.class);
+                intent7.putExtra("group","B-");
+                startActivity(intent7);
+                break;
+
+            case R.id.oplus:
+                Intent intent8 = new Intent(DisplayActivity.this, CategorySelectedActivity.class);
+                intent8.putExtra("group","O+");
+                startActivity(intent8);
+                break;
+
+            case R.id.ominus:
+                Intent intent9 = new Intent(DisplayActivity.this, CategorySelectedActivity.class);
+                intent9.putExtra("group","O-");
+                startActivity(intent9);
+                break;
+
+            case R.id.compatible:
+                Intent intent10 = new Intent(DisplayActivity.this, CategorySelectedActivity.class);
+                intent10.putExtra("group","Compatible with me");
+                startActivity(intent10);
+                break;
+
+            case R.id.sentEmail:
+                Intent intent11 = new Intent(DisplayActivity.this, SendEmailActivity.class);
+                startActivity(intent11);
+                break;
+
+
             case R.id.profile:
                 Intent intent = new Intent(DisplayActivity.this, ProfileActivity.class);
                 startActivity(intent);
