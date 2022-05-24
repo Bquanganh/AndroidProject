@@ -3,6 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/drawable-v24/buttons_background.xml" value="0.1" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_category_selected.xml" value="0.135258358662614" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_display.xml" value="0.278125" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_donor.xml" value="0.33" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_main.xml" value="0.278125" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_notification.xml" value="0.278125" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_profile.xml" value="0.278125" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_recipient_registration.xml" value="0.278125" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_select_registration.xml" value="0.278125" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_send_email.xml" value="0.278125" />
+        <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/header.xml" value="0.278125" />
         <entry key="..\:/Users/admin/AndroidStudioProjects/Test/app/src/main/res/drawable-v24/buttons_background.xml" value="0.234" />
         <entry key="..\:/Users/admin/AndroidStudioProjects/Test/app/src/main/res/drawable-v24/ic_baseline_person_24.xml" value="0.217" />
         <entry key="..\:/Users/admin/AndroidStudioProjects/Test/app/src/main/res/drawable/header_background.xml" value="0.234" />
