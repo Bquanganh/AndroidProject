@@ -9,6 +9,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdk 32
 
+
     defaultConfig {
         applicationId "com.example.test"
         minSdk 21

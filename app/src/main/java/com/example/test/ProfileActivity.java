@@ -38,7 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("My Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
         type = findViewById(R.id.type);
@@ -62,7 +62,12 @@ public class ProfileActivity extends AppCompatActivity {
                     bloodGroup.setText(snapshot.child("bloodGroup").getValue().toString());
                     email.setText(snapshot.child("email").getValue().toString());
 
-                    Glide.with(getApplicationContext()).load(snapshot.child("profilepictureurl").getValue().toString()).into(profileImage);
+                    if(snapshot.hasChild("profilepictureurl")){
+                        Glide.with(getApplicationContext()).load(snapshot.child("profilepictureurl").getValue().toString()).into(profileImage);
+                    }else{
+                        profileImage.setImageResource(R.drawable.profile);
+                    }
+
                 }
             }
 

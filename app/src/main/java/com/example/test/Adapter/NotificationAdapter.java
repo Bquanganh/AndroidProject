@@ -45,7 +45,7 @@ public class NotificationAdapter extends  RecyclerView.Adapter<NotificationAdapt
         final  Notification notification = notificationList.get(position);
 
         holder.notification_text.setText(notification.getText());
-        holder.notification_date.setText(notification.getText());
+        holder.notification_date.setText(notification.getDate());
         
         getUserInfo(holder.notification_profile_image,holder.notification_name,notification.getSenderId());
 
@@ -55,7 +55,7 @@ public class NotificationAdapter extends  RecyclerView.Adapter<NotificationAdapt
 
     @Override
     public int getItemCount() {
-        return 0;
+        return notificationList.size();
     }
 
     public  class ViewHolder extends RecyclerView.ViewHolder{
@@ -83,6 +83,7 @@ public class NotificationAdapter extends  RecyclerView.Adapter<NotificationAdapt
                 User user = snapshot.getValue(User.class);
                 nameTextView.setText(user.getName());
                 Glide.with(context).load(user.getProfilepictureurl()).into(circleImageView);
+
             }
 
             @Override

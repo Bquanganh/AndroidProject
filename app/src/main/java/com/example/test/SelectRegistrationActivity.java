@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class SelectRegistrationActivity extends AppCompatActivity {
 
-    private Button donorButton, recipientButton;
+    private Button donorButton, recipientButton,hospitalButton;
     private TextView backButton;
 
     @Override
@@ -35,6 +35,13 @@ public class SelectRegistrationActivity extends AppCompatActivity {
         recipientButton = findViewById(R.id.recipientButton);
         recipientButton.setOnClickListener(view -> {
             Intent intent = new Intent (SelectRegistrationActivity.this, RecipientRegistrationActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        hospitalButton = findViewById(R.id.hospitalButton);
+        hospitalButton.setOnClickListener(view -> {
+            Intent intent = new Intent (SelectRegistrationActivity.this, HospitalRegistrationActivity.class);
             startActivity(intent);
             finish();
         });

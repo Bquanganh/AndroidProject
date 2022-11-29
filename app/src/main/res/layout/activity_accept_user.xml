@@ -77,13 +77,13 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/emailNow"
+            android:id="@+id/accept"
             style="@style/myButtonTheme"
             android:layout_width="80dp"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
-            android:text="Email"
+            android:text="Accept"
             android:textAllCaps="false" />
 
 
@@ -96,6 +96,6 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="4dp"
         android:background="#000" />
-    
+
 
 </RelativeLayout>

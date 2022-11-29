@@ -33,16 +33,15 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class Donor extends AppCompatActivity {
+public class HospitalRegistrationActivity extends AppCompatActivity {
 
     private TextView backButton;
     private CircleImageView profile_image;
-    private TextInputEditText registerFullName,registerIdNumber,registerEmail,registerPassword;
+    private TextInputEditText registerFullName,registerIdNumber,registerEmail,registerPassword,registerAddress,registerCity;
     private Spinner bloodGroupSpinner;
     private Button registerButton;
 
@@ -51,24 +50,26 @@ public class Donor extends AppCompatActivity {
     private ProgressDialog loader;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference userDatabase;
+    private DatabaseReference userDatabase,hospitalDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donor);
+        setContentView(R.layout.activity_hospital_registration);
 
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Donor.this, LoginActivity.class);
+                Intent intent = new Intent(HospitalRegistrationActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
         profile_image = findViewById(R.id.profile_image);
         registerFullName = findViewById(R.id.registerFullName);
         registerIdNumber = findViewById(R.id.registerIdNumber);
+        registerCity= findViewById(R.id.registerCity);
+        registerAddress = findViewById(R.id.registerAddress);
         registerEmail = findViewById(R.id.registerEmail);
         registerPassword = findViewById(R.id.registerPassword);
         bloodGroupSpinner = findViewById(R.id.bloodGroupSpinner);
@@ -92,6 +93,8 @@ public class Donor extends AppCompatActivity {
                 final String email = registerEmail.getText().toString().trim();
                 final  String password = registerPassword.getText().toString().trim();
                 final  String fullName = registerFullName.getText().toString().trim();
+                final  String city = registerCity.getText().toString().trim();
+                final String Address = registerAddress.getText().toString().trim();
                 final String idNumber = registerIdNumber.getText().toString().trim();
                 final String bloodGroup = bloodGroupSpinner.getSelectedItem().toString();
 
@@ -107,12 +110,20 @@ public class Donor extends AppCompatActivity {
                     registerFullName.setError("Full Name is required");
                     return;
                 }
+                if(TextUtils.isEmpty(city)){
+                    registerCity.setError("City is required");
+                    return;
+                }
+                if(TextUtils.isEmpty(Address)){
+                    registerAddress.setError("Address is required");
+                    return;
+                }
                 if(TextUtils.isEmpty(idNumber)){
                     registerIdNumber.setError("ID Number is required");
                     return;
                 }
                 if(bloodGroup.equals("Select your blood groups")){
-                    Toast.makeText(Donor.this,"Select Blood group",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HospitalRegistrationActivity.this,"Select Blood group",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 else{
@@ -125,10 +136,9 @@ public class Donor extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()){
                                 String error = task.getException().toString();
-                                Toast.makeText(Donor.this,"Error"+error,Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HospitalRegistrationActivity.this,"Error"+error,Toast.LENGTH_SHORT).show();
                             }
                             else {
-
                                 String currentUserId= mAuth.getCurrentUser().getUid();
                                 userDatabase = FirebaseDatabase.getInstance().getReference()
                                         .child("users").child(currentUserId);
@@ -136,19 +146,48 @@ public class Donor extends AppCompatActivity {
                                 userInfo.put("id",currentUserId);
                                 userInfo.put("name",fullName);
                                 userInfo.put("email",email);
+                                userInfo.put("address",Address);
                                 userInfo.put("idNumber",idNumber);
+                                userInfo.put("city",city);
                                 userInfo.put("bloodGroup",bloodGroup);
-                                userInfo.put("type","donor");
-                                userInfo.put("search","donor"+bloodGroup);
+                                userInfo.put("type","hospital");
+                                userInfo.put("search","search"+bloodGroup);
+
+                                hospitalDatabase =FirebaseDatabase.getInstance().getReference()
+                                        .child("hospitals").child(currentUserId);
+                                HashMap hospitalInfo = new HashMap();
+                                hospitalInfo.put("id",currentUserId);
+                                hospitalInfo.put("name",fullName);
+                                hospitalInfo.put("email",email);
+                                hospitalInfo.put("address",Address);
+                                hospitalInfo.put("idNumber",idNumber);
+                                hospitalInfo.put("city",city);
+                                hospitalInfo.put("bloodGroup",bloodGroup);
+                                hospitalInfo.put("type","hospital");
+                                hospitalInfo.put("search","search"+bloodGroup);
 
                                 userDatabase.updateChildren(userInfo).addOnCompleteListener(new OnCompleteListener() {
                                     @Override
                                     public void onComplete(@NonNull Task task) {
                                         if (task.isSuccessful()){
-                                            Toast.makeText(Donor.this,"Data set Success",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(HospitalRegistrationActivity.this,"Data set Success",Toast.LENGTH_SHORT).show();
                                         }
                                         else{
-                                            Toast.makeText(Donor.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(HospitalRegistrationActivity.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
+
+                                        }
+//                                        finish();
+                                        //loader.dismiss();
+                                    }
+                                });
+                                hospitalDatabase.updateChildren(hospitalInfo).addOnCompleteListener(new OnCompleteListener() {
+                                    @Override
+                                    public void onComplete(@NonNull Task task) {
+                                        if (task.isSuccessful()){
+                                            Toast.makeText(HospitalRegistrationActivity.this,"Data set Success",Toast.LENGTH_SHORT).show();
+                                        }
+                                        else{
+                                            Toast.makeText(HospitalRegistrationActivity.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
 
                                         }
                                         finish();
@@ -175,7 +214,7 @@ public class Donor extends AppCompatActivity {
                                     uploadTask.addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(Donor.this,"Image Upload",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(HospitalRegistrationActivity.this,"Image Upload",Toast.LENGTH_SHORT).show();
 
                                         }
                                     });
@@ -196,10 +235,21 @@ public class Donor extends AppCompatActivity {
                                                             @Override
                                                             public void onComplete(@NonNull Task task) {
                                                                 if (task.isSuccessful()){
-                                                                    Toast.makeText(Donor.this,"Image Url added to database",Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(HospitalRegistrationActivity.this,"Image Url added to database",Toast.LENGTH_SHORT).show();
 
                                                                 }else{
-                                                                    Toast.makeText(Donor.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(HospitalRegistrationActivity.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }
+                                                        });
+                                                        hospitalDatabase.updateChildren(newImageMap).addOnCompleteListener(new OnCompleteListener() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task task) {
+                                                                if (task.isSuccessful()){
+                                                                    Toast.makeText(HospitalRegistrationActivity.this,"Image Url added to database",Toast.LENGTH_SHORT).show();
+
+                                                                }else{
+                                                                    Toast.makeText(HospitalRegistrationActivity.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
                                                                 }
                                                             }
                                                         });
@@ -209,7 +259,7 @@ public class Donor extends AppCompatActivity {
                                             }
                                         }
                                     });
-                                    Intent intent = new Intent(Donor.this,DisplayActivity.class);
+                                    Intent intent = new Intent(HospitalRegistrationActivity.this,DisplayActivity.class);
                                     startActivity(intent);
                                     finish();
                                     loader.dismiss();
@@ -222,9 +272,7 @@ public class Donor extends AppCompatActivity {
 
             }
         });
-
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

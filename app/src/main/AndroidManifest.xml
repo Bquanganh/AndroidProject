@@ -14,6 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Test">
         <activity
+            android:name=".BookingDonationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HospitalRegistrationActivity"
+            android:exported="false" />
+        <activity
             android:name=".NotificationActivity"
             android:exported="false" />
         <activity

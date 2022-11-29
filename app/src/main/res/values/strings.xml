@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Anh-Bao</string>
+    <string name="app_name">Blood Group</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -8,12 +8,11 @@
         <item>Select your blood groups</item>
         <item>A+</item>
         <item>A-</item>
-        <item>B+</item>
-        <item>B-</item>
         <item>AB+</item>
         <item>AB-</item>
+        <item>B+</item>
+        <item>B-</item>
         <item>O+</item>
         <item>O-</item>
-
     </string-array>
 </resources>

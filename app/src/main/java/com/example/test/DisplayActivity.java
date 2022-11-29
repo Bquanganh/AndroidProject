@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,12 +70,6 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-        
-        
-
-
-
-
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -110,8 +105,14 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
                 String type = snapshot.child("type").getValue().toString();
                 if(type.equals("donor")){
                     readRecipients();
+//                    readHospital();
+                }
+                if(type.equals("recipient")){
+                    readDonors();
+//                    readHospital();
                 }else{
                     readDonors();
+                    readRecipients();
                 }
             }
 
@@ -120,6 +121,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
 
             }
         });
+
 
         nav_user_image = nav_view.getHeaderView(0).findViewById(R.id.nav_user_image);
         nav_user_name = nav_view.getHeaderView(0).findViewById(R.id.nav_user_name);
@@ -183,7 +185,6 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     User user = dataSnapshot.getValue(User.class);
                     userList.add(user);
@@ -211,7 +212,6 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     User user = dataSnapshot.getValue(User.class);
                     userList.add(user);
@@ -223,6 +223,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
                     Toast.makeText(DisplayActivity.this,"No recipients",Toast.LENGTH_SHORT).show();
                     progressbar.setVisibility(View.GONE);
                 }
+
             }
 
             @Override
@@ -232,6 +233,32 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
         });
     }
 
+//    private void readHospital() {
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
+//        Query query = reference.orderByChild("type").equalTo("hospital");
+//        query.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+//                    User user = dataSnapshot.getValue(User.class);
+//                    userList.add(user);
+//                }
+//                userAdapter.notifyDataSetChanged();
+//                progressbar.setVisibility(View.GONE);
+//
+//                if (userList.isEmpty()){
+//                    Toast.makeText(DisplayActivity.this,"No Hospital",Toast.LENGTH_SHORT).show();
+//                    progressbar.setVisibility(View.GONE);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//    }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -281,13 +308,6 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
                 intent9.putExtra("group","O-");
                 startActivity(intent9);
                 break;
-
-            case R.id.compatible:
-                Intent intent10 = new Intent(DisplayActivity.this, CategorySelectedActivity.class);
-                intent10.putExtra("group","Compatible with me");
-                startActivity(intent10);
-                break;
-
             case R.id.sentEmail:
                 Intent intent11 = new Intent(DisplayActivity.this, SendEmailActivity.class);
                 startActivity(intent11);
@@ -304,7 +324,14 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
                 Intent intent1 = new Intent(DisplayActivity.this, LoginActivity.class);
                 startActivity(intent1);
                 break;
-
+            case R.id.notifications:
+                Intent intent13 = new Intent(DisplayActivity.this, NotificationActivity.class);
+                startActivity(intent13);
+                break;
+            case R.id.bookingSchedule:
+                Intent intent14 = new Intent(DisplayActivity.this, BookingDonationActivity.class);
+                startActivity(intent14);
+                break;
 
         }
         drawerLayout.closeDrawer(GravityCompat.START);

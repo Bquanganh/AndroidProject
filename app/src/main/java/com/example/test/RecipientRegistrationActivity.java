@@ -129,6 +129,7 @@ public class RecipientRegistrationActivity extends AppCompatActivity {
                                 Toast.makeText(RecipientRegistrationActivity.this,"Error"+error,Toast.LENGTH_SHORT).show();
                             }
                             else {
+
                                 String currentUserId= mAuth.getCurrentUser().getUid();
                                 userDatabase = FirebaseDatabase.getInstance().getReference()
                                         .child("users").child(currentUserId);

@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.example.test.Adapter.BookingAdapter;
 import com.example.test.Adapter.UserAdapter;
 import com.example.test.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,11 +30,12 @@ import java.util.List;
 public class SendEmailActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView recyclerView;
+    public Button accept;
 
 
     List<String> idList;
     List<User> userList;
-    UserAdapter userAdapter;
+    BookingAdapter userAdapter;
 
 
 
@@ -57,14 +59,17 @@ public class SendEmailActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         userList = new ArrayList<>();
-        userAdapter = new UserAdapter(SendEmailActivity.this,userList);
+        userAdapter = new BookingAdapter(SendEmailActivity.this,userList);
         recyclerView.setAdapter(userAdapter);
         
         idList = new ArrayList<>();
         getIdOfUsers();
 
 
+
+
     }
+
 
     private void getIdOfUsers() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("emails")
@@ -111,6 +116,7 @@ public class SendEmailActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

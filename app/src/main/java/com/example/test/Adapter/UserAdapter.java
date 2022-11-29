@@ -102,11 +102,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
 
                                         String mEmail = user.getEmail();
                                         String mSubject = "BLOOD DONATION";
-                                        String mMessage = "Hello" + namOfTheReceiver+ ", "+nameOfSender+"would like blood donation from you. Here's his/her detail:\n"
+                                        String mMessage = "Hello " + namOfTheReceiver+ ", "+nameOfSender+" would like blood donation from you. Here's his/her detail:\n"
                                                 + "Name: "+nameOfSender+"\n"+
-                                                "Phone Number" +phone+"\n"+
-                                                "Email"+email + "\n"+
-                                                "Blood Group"+blood +"\n"+
+                                                "Phone Number: " +phone+"\n"+
+                                                "Email: "+email + "\n"+
+                                                "Blood Group: "+blood +"\n"+
                                                 "Kindly Reach out to him/her. Thank you!\n"+
                                                 "BLOOD DONATION APP -- DONATE BLOOD, SAVE LIVES";
                                         javaMailApi JavaMaikApi = new javaMailApi(context,mEmail,mSubject,mMessage);
@@ -148,7 +148,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
         return userList.size();
     }
 
-    public class  ViewHolder extends RecyclerView.ViewHolder{
+    public static class  ViewHolder extends RecyclerView.ViewHolder{
 
         public CircleImageView userProfileImage;
         public TextView type,userName,userEmail,userIdNumber,userBloodGroup;

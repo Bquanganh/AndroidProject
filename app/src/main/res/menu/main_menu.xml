@@ -10,9 +10,9 @@
         android:icon="@drawable/ic_check"
         android:title="Donor Emailed"/>
     <item
-        android:id="@+id/compatible"
-        android:icon="@drawable/compatible"
-        android:title="Compatible with me"/>
+        android:id="@+id/bookingSchedule"
+        android:icon="@drawable/booking_event"
+        android:title="Booking Hospital"/>
     <item
         android:title="Blood Groups">
         <menu>

@@ -33,6 +33,7 @@ public class CategorySelectedActivity extends AppCompatActivity {
     private String title ="";
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +68,6 @@ public class CategorySelectedActivity extends AppCompatActivity {
 
         }
 
-
     }
 
     private void getCompatibleUsers() {
@@ -75,18 +75,19 @@ public class CategorySelectedActivity extends AppCompatActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String result;
+                String result = null;
                 String type = snapshot.child("type").getValue().toString();
+                String bloodgroup = snapshot.child("bloodGroup").getValue().toString();
                 if(type.equals("donor")){
                     result = "recipient";
                 }else {
-                    result = "donor";
+                   result="donor";
                 }
 
-                String bloodgroup = snapshot.child("bloodGroup").getValue().toString();
+
 
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
-                Query query = reference.orderByChild("search").equalTo(result +bloodgroup);
+                Query query = reference.orderByChild("search").equalTo(result+bloodgroup);
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
