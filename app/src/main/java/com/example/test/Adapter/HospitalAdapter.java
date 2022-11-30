@@ -29,30 +29,36 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
         this.hospitalList = hospitalList;
     }
 
+    public void setData(List<Hospital> list){
+        this.hospitalList=list;
+        notifyDataSetChanged();
+    }
+
 
     @NonNull
     @Override
     public HospitalAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.activity_booking_donation,parent,false);
-        return new HospitalAdapter.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull HospitalAdapter.ViewHolder holder, int position) {
         Hospital hospital = hospitalList.get(position);
         holder.type.setText(hospital.getType());
-
         holder.userEmail.setText(hospital.getEmail());
         holder.userName.setText(hospital.getName());
         holder.userIdNumber.setText(hospital.getIdNumber());
         holder.userBloodGroup.setText(hospital.getBloodGroup());
+        holder.userAddress.setText(hospital.getAddress());
+
 
         Glide.with(context).load(hospital.getProfilepictureurl()).error(R.mipmap.ic_launcher).into(holder.userProfileImage);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return hospitalList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

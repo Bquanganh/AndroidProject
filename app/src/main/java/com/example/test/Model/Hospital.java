@@ -1,20 +1,20 @@
 package com.example.test.Model;
 
 public class Hospital {
-    String name, bloodGroup, email, id,profilepictureurl, idNumber, search,address,city;
-    String type;
-
+    String name,type, bloodGroup, email, id,profilepictureurl, idNumber, search,address,city;
+    public Hospital(){}
     public Hospital(String name, String bloodGroup, String email, String id, String profilepictureurl, String idNumber, String search, String type,String address,String city) {
-        this.name = name;
+        this.address= address;
         this.bloodGroup = bloodGroup;
+        this.city=city;
         this.email = email;
         this.id = id;
-        this.profilepictureurl = profilepictureurl;
         this.idNumber = idNumber;
+        this.name = name;
+        this.profilepictureurl = profilepictureurl;
         this.search = search;
         this.type = type;
-        this.address= address;
-        this.city=city;
+
     }
     public String getProfilepictureurl() {
         return profilepictureurl;
@@ -87,10 +87,10 @@ public class Hospital {
     public void setAddress(String address) {
         this.address = address;
     }
+
     public String getCity() {
         return city;
     }
-
     public void getCity(String city) {
         this.city = city;
     }

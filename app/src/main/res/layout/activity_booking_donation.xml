@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:textAlignment="textStart"
+                android:gravity="center"
                 android:textAllCaps="true"
                 android:textColor="#000"
                 android:textSize="20sp"
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:textAlignment="textStart"
+                android:gravity="center"
                 android:textAllCaps="true"
                 android:textColor="#000"
                 android:textSize="18sp"
@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:textAlignment="textStart"
+                android:gravity="center"
                 android:textColor="#000"
                 android:textSize="18sp" />
             <TextView
@@ -62,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:textAlignment="textStart"
+                android:gravity="center"
                 android:textColor="#000"
                 android:textSize="18sp" />
 
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:textAlignment="textStart"
+                android:gravity="center"
                 android:textColor="#000"
                 android:textSize="18sp" />
 
@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:textAlignment="textStart"
+                android:gravity="center"
                 android:textColor="#000"
                 android:textSize="18sp" />
         </LinearLayout>
