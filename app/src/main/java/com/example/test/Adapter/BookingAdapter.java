@@ -62,6 +62,12 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         holder.userBloodGroup.setText(user.getBloodGroup());
 
         Glide.with(context).load(user.getProfilepictureurl()).error(R.mipmap.ic_launcher).into(holder.userProfileImage);
+//        holder.accept.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                Intent intent = new Intent(SendEmailActivity.)
+//            }
+//        });
 
 
     }

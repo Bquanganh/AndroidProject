@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Test">
         <activity
+            android:name=".BookingFor2UsersActivity"
+            android:exported="false" />
+        <activity
             android:name=".BookingDonationActivity"
             android:exported="false" />
         <activity
