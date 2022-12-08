@@ -15,13 +15,19 @@
         <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_select_registration.xml" value="0.278125" />
         <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/activity_send_email.xml" value="0.278125" />
         <entry key="..\:/New folder (3)/AndroidProject/app/src/main/res/layout/header.xml" value="0.278125" />
-        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_accept_user.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_booking_donation.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/drawable-v24/buttons_background.xml" value="0.112" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/drawable-v24/ic_baseline_person_24.xml" value="0.112" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.112" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/drawable-v24/ic_lock.xml" value="0.112" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/drawable-v24/ic_mail.xml" value="0.112" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/drawable/ic_done.xml" value="0.1" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_accept_user.xml" value="0.3049095607235142" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_booking_donation.xml" value="0.1" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_booking_for2_users.xml" value="0.1" />
-        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_booking_schedule.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_booking_schedule.xml" value="0.19594594594594594" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_category_selected.xml" value="0.11822916666666666" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_display.xml" value="0.12916666666666668" />
-        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_donor.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_donor.xml" value="0.1762917933130699" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_hospital_registration.xml" value="0.22" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/activity_notification.xml" value="0.36666666666666664" />
@@ -34,6 +40,8 @@
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/fragment_booking_step_three.xml" value="0.190625" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/fragment_booking_step_two.xml" value="0.190625" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/header.xml" value="0.25" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/layout_all_hospital.xml" value="0.2796296296296296" />
+        <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/loading.xml" value="0.11979166666666667" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/notification_item.xml" value="0.22" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/output_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Quang Anh/Documents/GitHub/AndroidProject/app/src/main/res/layout/user_displayed_layout.xml" value="0.11822916666666666" />

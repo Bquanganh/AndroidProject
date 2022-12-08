@@ -4,11 +4,16 @@ buildscript {
         // Check that you have the following line (if not, add it):
         google()  // Google's Maven repository
         mavenCentral()
+        jcenter()
+
     }
     dependencies {
 
         // Add this line
         classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.github.d-max:spots-dialog:1.1@aar'
+
+
 
     }
 }
@@ -16,6 +21,7 @@ buildscript {
 plugins {
     id 'com.android.application' version '7.1.3' apply false
     id 'com.android.library' version '7.1.3' apply false
+
 }
 
 task clean(type: Delete) {
