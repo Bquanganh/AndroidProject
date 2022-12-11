@@ -63,7 +63,8 @@ public class MyAllHospitalAdapter extends RecyclerView.Adapter<MyAllHospitalAdap
                 holder.card_hospital.setCardBackgroundColor(context.getResources().getColor(R.color.purple_200));
 
                 Intent i = new Intent(Common.KEY_ENABLE_BUTTON_NEXT);
-                i.putExtra(Common.KEY_HOSPITAL, (Parcelable) allHospitalsList.get(pos));
+                i.putExtra(Common.KEY_HOSPITAL,allHospitalsList.get(pos));
+                i.putExtra(Common.KEY_STEP,1);
                 localBroadcastManager.sendBroadcast(i);
             }
         });

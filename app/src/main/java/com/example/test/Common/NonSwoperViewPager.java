@@ -56,7 +56,7 @@ public class NonSwoperViewPager extends ViewPager {
         }
 
         @Override
-        public void startScroll(int startX, int startY, int dx, int dy) {
+        public void startScroll(int startX, int startY, int dx,int dy, int duration) {
             super.startScroll(startX, startY, dx, dy, 350);
         }
     }

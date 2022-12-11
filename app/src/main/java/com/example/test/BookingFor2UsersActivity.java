@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -39,35 +40,24 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
     private StepView stepView;
     private NonSwoperViewPager viewPager;
 
-    //Event
-    @OnClick(R.id.btn_previous_step)
-    void previousStep(){
-        if(Common.step ==3 || Common.step > 0)
-        {
-            Common.step --;
-            viewPager.setCurrentItem(Common.step);
-        }
-    }
-    @OnClick(R.id.btn_next_step)
-    void nextClick(){
-        if (Common.step <3 || Common.step ==0){
-            Common.step++;
-            if (Common.step ==1){
-                if (Common.currentHospital !=null){
-                    loadTimeSchedule(Common.currentHospital.getHospitalID());
-                }
-            }
-            viewPager.setCurrentItem(Common.step);
-        }
-    }
 
     private void loadTimeSchedule(String hospitalID) {
+        Intent i = new Intent( Common.KEY_DISPLAY_TIME_SLOT);
+        localBroadcastManager.sendBroadcast(i);
     }
 
     //Broadcast Receiver
     private BroadcastReceiver buttonNextReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            int step = intent.getIntExtra(Common.KEY_STEP,0);
+            if (step ==1)
+            {
+                Common.currentHospital = intent.getParcelableExtra(Common.KEY_HOSPITAL);
+            }else if (step ==2)
+            {
+
+            }
             Common.currentHospital = intent.getParcelableExtra(Common.KEY_HOSPITAL);
             btn_next_step.setEnabled(true);
             setupColorButton();
@@ -112,6 +102,8 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+
+                stepView.go(position,true);
                 if(position==0)
                     btn_previous_step.setEnabled(false);
                 else
@@ -123,6 +115,31 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+        btn_next_step.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Common.step <3 || Common.step ==0){
+                    Common.step++;
+                    if (Common.step ==1){
+                        if (Common.currentHospital !=null){
+                        loadTimeSchedule(Common.currentHospital.getId());
+                        }
+                    }
+
+                    viewPager.setCurrentItem(Common.step);
+        }
+            }
+        });
+        btn_previous_step.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(Common.step ==3 || Common.step > 0)
+                {
+                    Common.step --;
+                    viewPager.setCurrentItem(Common.step);
+                }
             }
         });
 

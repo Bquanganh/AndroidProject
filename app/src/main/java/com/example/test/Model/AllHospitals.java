@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class AllHospitals implements Parcelable {
-    private  String name,address,hospitalID;
+    private  String name,address,id;
 
     public AllHospitals() {
     }
@@ -25,18 +25,18 @@ public class AllHospitals implements Parcelable {
         this.address = address;
     }
 
-    public String getHospitalID() {
-        return hospitalID;
+    public String getId() {
+        return id;
     }
 
-    public void setHospitalID(String hospitalID) {
-        this.hospitalID = hospitalID;
+    public void setId(String id) {
+        this.id = id;
     }
 
     protected AllHospitals(Parcel in) {
         name = in.readString();
         address = in.readString();
-        hospitalID = in.readString();
+        id = in.readString();
     }
 
     public static final Creator<AllHospitals> CREATOR = new Creator<AllHospitals>() {
@@ -60,6 +60,6 @@ public class AllHospitals implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(name);
         parcel.writeString(address);
-        parcel.writeString(hospitalID);
+        parcel.writeString(id);
     }
 }

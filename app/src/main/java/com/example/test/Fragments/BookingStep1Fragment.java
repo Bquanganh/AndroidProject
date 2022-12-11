@@ -176,7 +176,7 @@ public class BookingStep1Fragment extends Fragment implements AllLocation, Hospi
                     List<AllHospitals> list = new ArrayList<>();
                     for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                         AllHospitals allHospitals = dataSnapshot.getValue(AllHospitals.class);
-                        allHospitals.getHospitalID();
+                        allHospitals.getId();
                         list.add(allHospitals);
                     }
                     hospitalsLoadListener.onHospitalsLoadSuccess(list);
