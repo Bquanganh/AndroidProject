@@ -4,14 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp"
     tools:context=".BookingFor2UsersActivity"
     >
 
     <CalendarView
+        android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="6dp"
         />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle_time_slot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+
 
 
 

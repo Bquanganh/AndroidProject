@@ -55,7 +55,7 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
             {
                 Common.currentHospital = intent.getParcelableExtra(Common.KEY_HOSPITAL);
             }else if (step ==2)
-            {
+            {   Common.currentTimeSlot = intent.getIntExtra(Common.KEY_TIME_SLOT,-1);
 
             }
             Common.currentHospital = intent.getParcelableExtra(Common.KEY_HOSPITAL);
@@ -126,10 +126,23 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
                         if (Common.currentHospital !=null){
                         loadTimeSchedule(Common.currentHospital.getId());
                         }
+                    }else if (Common.step ==2){
+                        if (Common.currentHospital !=null){
+                            loadTimeSchedule(Common.currentHospital.getId());
+                        }
+                    }else if (Common.step ==3){
+                        if (Common.currentTimeSlot !=1){
+                            confirmBooking();
+                        }
                     }
 
                     viewPager.setCurrentItem(Common.step);
         }
+            }
+
+            private void confirmBooking() {
+                Intent i = new Intent(Common.KEY_CONFIRM_BOOKING);
+                localBroadcastManager.sendBroadcast(i);
             }
         });
         btn_previous_step.setOnClickListener(new View.OnClickListener() {

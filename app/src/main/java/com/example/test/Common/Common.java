@@ -1,6 +1,9 @@
 package com.example.test.Common;
 
 import com.example.test.Model.AllHospitals;
+import com.example.test.Model.TimeSlot;
+
+import java.util.Calendar;
 
 public class Common {
     public static final String KEY_ENABLE_BUTTON_NEXT = "ENABLE_BUTTON_NEXT";
@@ -8,8 +11,13 @@ public class Common {
     public static final String KEY_DISPLAY_TIME_SLOT = "DISPLAY_TIME_SLOT";
     public static final String KEY_STEP = "STEP";
     public static final int TIME_SLOT_TOTAL = 17;
+    public static final Object DISABLE_TAG = "DISABLE";
+    public static final String KEY_TIME_SLOT = "TIME_SLOT";
+    public static final String KEY_CONFIRM_BOOKING = "CONFIRM_BOOKING";
     public static AllHospitals currentHospital;
     public static int step = 0;
+    public static int currentTimeSlot=-1;
+    public static Calendar currentDate = Calendar.getInstance();
 
     public static String convertTimeSLotToString(int slot) {
         switch (slot)
