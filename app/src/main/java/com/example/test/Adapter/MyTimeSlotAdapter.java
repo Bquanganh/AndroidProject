@@ -2,6 +2,7 @@ package com.example.test.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,12 +73,21 @@ public class MyTimeSlotAdapter extends RecyclerView.Adapter<MyTimeSlotAdapter.My
                 {
                     holder.card_time_slot.setTag(Common.DISABLE_TAG);
                     holder.card_time_slot.setCardBackgroundColor(context.getResources()
-                    .getColor(R.color.purple_200));
+                    .getColor(R.color.gray));
                     holder.txt_time_slot_description.setText("Full");
                     holder.txt_time_slot_description.setTextColor(context.getResources()
                             .getColor(R.color.white));
                     holder.txt_time_slot.setTextColor(context.getResources()
                             .getColor(R.color.white));
+                }else
+                {
+                    holder.card_time_slot.setCardBackgroundColor(context.getResources()
+                            .getColor(R.color.white));
+                    holder.txt_time_slot_description.setText("Available");
+                    holder.txt_time_slot_description.setTextColor(context.getResources()
+                            .getColor(R.color.black));
+                    holder.txt_time_slot.setTextColor(context.getResources()
+                            .getColor(R.color.black));
                 }
             }
         }
@@ -97,8 +107,9 @@ public class MyTimeSlotAdapter extends RecyclerView.Adapter<MyTimeSlotAdapter.My
                                     .getColor(R.color.white));
                         }
                     }
+                    Common.currentTimeSlot=pos;
                     holder.card_time_slot.setCardBackgroundColor(context.getResources()
-                            .getColor(R.color.purple_200));
+                            .getColor(R.color.teal_200));
 
                     Intent i = new Intent(Common.KEY_ENABLE_BUTTON_NEXT);
                     i.putExtra(Common.KEY_TIME_SLOT,pos);

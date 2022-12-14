@@ -54,11 +54,12 @@ public class BookingStep3Fragment extends Fragment {
     private BookingFor2UsersActivity bookingFor2UsersActivity;
 
 
+
+
     BroadcastReceiver confirmBookingReceive = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("currentHospital",Common.currentHospital.getName());
             setData();
         }
 

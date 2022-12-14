@@ -56,7 +56,7 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
     private BookingFor2UsersActivity bookingFor2UsersActivity;
     private  String hospitalId;
 
-    Calendar calendar;
+    Calendar selected_date;
 
     Unbinder unbinder;
     @BindView(R.id.recycle_time_slot)
@@ -65,18 +65,7 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
     CalendarView calendarView;
     SimpleDateFormat simpleDateFormat;
 
-    BroadcastReceiver displayTimeSlot = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
 
-            Calendar date = Calendar.getInstance();
-            date.add(Calendar.DATE,0);
-
-            loadAvailableTimeSlotOfHospital(hospitalId,simpleDateFormat.format(date.getTime()));
-        }
-
-
-    };
     private void loadAvailableTimeSlotOfHospital(String id, String date) {
         Log.d("Aaa",date);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
@@ -139,20 +128,16 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
         super.onCreate(savedInstanceState);
         timeSlotLoadListener =this;
 
-        localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
-        localBroadcastManager.registerReceiver(displayTimeSlot,new IntentFilter(Common.KEY_DISPLAY_TIME_SLOT));
+
         simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy");
 
 
-
+//        selected_date = Calendar.getInstance();
+//        selected_date.add(Calendar.DATE,0);
 
     }
 
-    @Override
-    public void onDestroy() {
-        localBroadcastManager.unregisterReceiver(displayTimeSlot);
-        super.onDestroy();
-    }
+
 
     @Nullable
     @Override
@@ -174,6 +159,10 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
         recycle_time_slot.addItemDecoration(new SpacesItemDecoration(8));
         hospitalId = bookingFor2UsersActivity.getHospitalId();
         Log.d("HosCurrent", hospitalId);
+        Calendar date = Calendar.getInstance();
+        date.add(Calendar.DATE,0);
+        Log.d("Test",hospitalId);
+        loadAvailableTimeSlotOfHospital(hospitalId,simpleDateFormat.format(date.getTime()));
 
 //        Calendar startDate = Calendar.getInstance();
 //        startDate.add(Calendar.DATE,0);

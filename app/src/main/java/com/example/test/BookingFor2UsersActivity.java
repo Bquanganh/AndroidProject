@@ -57,20 +57,17 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
      public List<Hospital> list;
     public User user;
 
-    private void loadTimeSchedule(String hospitalID) {
-        Intent i = new Intent( Common.KEY_DISPLAY_TIME_SLOT);
-        localBroadcastManager.sendBroadcast(i);
-    }
+
 
     //Broadcast Receiver
     private BroadcastReceiver buttonNextReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             int step = intent.getIntExtra(Common.KEY_STEP,0);
-            if (step ==1)
+            if (step ==0)
             {
                 Common.currentHospital = intent.getParcelableExtra(Common.KEY_HOSPITAL);
-            }else if (step ==2)
+            }else if (step ==1)
             {   Common.currentTimeSlot = intent.getIntExtra(Common.KEY_TIME_SLOT,-1);
 
             }
@@ -118,6 +115,9 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         localBroadcastManager.registerReceiver(buttonNextReceiver,new IntentFilter(Common.KEY_ENABLE_BUTTON_NEXT));
         setupStepView();
         setupColorButton();
+        Log.d("Step", String.valueOf(Common.step));
+
+
 
 
 
@@ -125,7 +125,7 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
 
         //View
         viewPager.setAdapter(new MyViewPagerAdapter(getSupportFragmentManager()));
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -152,25 +152,24 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         btn_next_step.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Common.step <3 || Common.step ==0){
+                if (Common.step <2 || Common.step ==0){
                     Common.step++;
-                    if (Common.step ==1){
-                        if (Common.currentHospital !=null){
+                    Log.d("Step", String.valueOf(Common.step));
+                    if (Common.step ==0)
+                    {
                         loadTimeSchedule(hospitalId);
-                        }
-                    }else if (Common.step ==2){
-                        if (Common.currentHospital !=null){
-                            loadTimeSchedule(hospitalId);
-                        }
-                    }else if (Common.step ==3){
-                        if (Common.currentTimeSlot !=1){
-                            loadTimeSchedule(hospitalId);
+                    }else if (Common.step ==1){
+
                             confirmBooking();
-                        }
+
                     }
 
                     viewPager.setCurrentItem(Common.step);
         }
+            }
+            private void loadTimeSchedule(String hospitalID) {
+                Intent i = new Intent( Common.KEY_DISPLAY_TIME_SLOT);
+                localBroadcastManager.sendBroadcast(i);
             }
 
             private void confirmBooking() {
@@ -181,7 +180,8 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         btn_previous_step.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Common.step ==3 || Common.step > 0)
+                Log.d("Step", String.valueOf(Common.step));
+                if(Common.step ==2 || Common.step > 0)
                 {
                     Common.step --;
                     viewPager.setCurrentItem(Common.step);
@@ -207,8 +207,6 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
 
     private void setupStepView() {
         List<String> stepList = new ArrayList<>();
-        stepList.add("Location");
-        stepList.add("Hospitals");
         stepList.add("Time");
         stepList.add("Confirm");
     }
