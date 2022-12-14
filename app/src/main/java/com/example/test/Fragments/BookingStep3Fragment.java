@@ -5,20 +5,37 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.test.BookingFor2UsersActivity;
 import com.example.test.Common.Common;
+import com.example.test.Model.BookingInformation;
+import com.example.test.Model.Hospital;
+import com.example.test.Model.User;
 import com.example.test.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,39 +46,37 @@ public class BookingStep3Fragment extends Fragment {
     SimpleDateFormat simpleDateFormat;
     LocalBroadcastManager localBroadcastManager;
     Unbinder unbinder;
-    @BindView(R.id.txt_booking_location_text)
-    TextView txt_booking_location_text;
-    @BindView(R.id.txt_booking_time_text)
-    TextView txt_booking_time_text;
-    @BindView(R.id.txt_hospital_address_text)
-    TextView txt_hospital_address_text;
-    @BindView(R.id.txt_hospital_name)
-    TextView txt_hospital_name;
-    @BindView(R.id.txt_hospital_open_hours)
-    TextView txt_hospital_open_hours;
-    @BindView(R.id.txt_hospital_phone_text)
-    TextView txt_hospital_phone_text;
-    @BindView(R.id.txt_hospital_web)
-    TextView txt_hospital_web;
+
+    private TextView txt_hospital_name,txt_booking_time_text,txt_booking_location_text,txt_hospital_web,txt_hospital_phone_text,txt_hospital_open_hours,txt_hospital_address_text;
+    private Button btn_confirm;
+    public Hospital hospital;
+    public User userSelected;
+    private BookingFor2UsersActivity bookingFor2UsersActivity;
+
 
     BroadcastReceiver confirmBookingReceive = new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d("currentHospital",Common.currentHospital.getName());
             setData();
         }
 
-        private void setData() {
-            txt_booking_location_text.setText(Common.currentHospital.getName());
-            txt_booking_time_text.setText(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
-            .append(" at ")
-            .append(simpleDateFormat.format(Common.currentDate.getTime())));
 
-            txt_hospital_address_text.setText(Common.currentHospital.getAddress());
-            txt_hospital_web.setText(Common.currentHospital.getWebsite());
-            txt_hospital_open_hours.setText(Common.currentHospital.getOpenHours());
-            txt_hospital_name.setText(Common.currentHospital.getName());
-        }
     };
+    private void setData() {
+
+        txt_booking_location_text.setText(userSelected.getName());
+        txt_hospital_phone_text.setText(hospital.getIdNumber());
+        txt_booking_time_text.setText(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
+                .append(" at ")
+                .append(simpleDateFormat.format(Common.currentDate.getTime())));
+
+        txt_hospital_address_text.setText(hospital.getAddress());
+        txt_hospital_web.setText(hospital.getEmail());
+
+        txt_hospital_name.setText(hospital.getName());
+    }
 
 
 
@@ -75,9 +90,44 @@ public class BookingStep3Fragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
         localBroadcastManager.registerReceiver(confirmBookingReceive,new IntentFilter(Common.KEY_CONFIRM_BOOKING));
+        bookingFor2UsersActivity = (BookingFor2UsersActivity) getActivity();
+        String hospitalID = bookingFor2UsersActivity.getHospitalId();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("hospitals").child(hospitalID);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                Hospital allHospitals = snapshot.getValue(Hospital.class);
+
+                hospital=allHospitals;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        Log.d("HospiralData", String.valueOf(hospital));
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("hospitals").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                User user = snapshot.getValue(User.class);
+                userSelected=user;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
     }
 
@@ -93,6 +143,57 @@ public class BookingStep3Fragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_booking_step_three,container,false);
         unbinder = ButterKnife.bind(this,view);
+
+
+        txt_hospital_name= view.findViewById(R.id.txt_hospital_name);
+        txt_booking_time_text= view.findViewById(R.id.txt_booking_time_text);
+        txt_booking_location_text= view.findViewById(R.id.txt_booking_location_text);
+        txt_hospital_web= view.findViewById(R.id.txt_hospital_web);
+        txt_hospital_phone_text= view.findViewById(R.id.txt_hospital_phone_text);
+        txt_hospital_open_hours= view.findViewById(R.id.txt_hospital_open_hours);
+        txt_hospital_address_text=view.findViewById(R.id.txt_hospital_address_text);
+
+        btn_confirm = view.findViewById(R.id.btn_confirm);
+
+
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                //Create booking information
+                BookingInformation bookingInformation = new BookingInformation();
+                Log.d("TestDatabase",  hospital.getId());
+                bookingInformation.setHospitalName(hospital.getName());
+                bookingInformation.setHospitalId(hospital.getId());
+                bookingInformation.setCustomerName(userSelected.getName());
+                bookingInformation.setHospitalAddress(hospital.getAddress());
+                bookingInformation.setCustomerId(userSelected.getId());
+                bookingInformation.setTime(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
+                        .append(" at ")
+                        .append(simpleDateFormat.format(Common.currentDate.getTime())).toString());
+                bookingInformation.setSlot(Long.valueOf(Common.currentTimeSlot));
+
+                //Submit to hospital document
+                DatabaseReference bookDate = FirebaseDatabase.getInstance().getReference()
+                        .child("hospitals").child(hospital.getId())
+                        .child(Common.simpleFormat.format(Common.currentDate.getTime()))
+                        .child(String.valueOf(Common.currentTimeSlot));
+                // Write data
+                bookDate.setValue(bookingInformation).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        getActivity().finish();// Close activity
+                        Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
         return  view;
     }
 }

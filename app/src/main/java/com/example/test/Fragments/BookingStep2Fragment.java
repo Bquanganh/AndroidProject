@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +20,18 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.test.Adapter.MyTimeSlotAdapter;
+import com.example.test.BookingFor2UsersActivity;
 import com.example.test.Common.Common;
 import com.example.test.Common.SpacesItemDecoration;
 import com.example.test.Interface.TimeSlotLoadListener;
+import com.example.test.Model.AllHospitals;
+import com.example.test.Model.Hospital;
 import com.example.test.Model.TimeSlot;
 import com.example.test.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,8 +53,11 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
     private RecyclerView recyclerView;
     TimeSlotLoadListener timeSlotLoadListener;
     LocalBroadcastManager localBroadcastManager;
+    private BookingFor2UsersActivity bookingFor2UsersActivity;
+    private  String hospitalId;
 
-    Calendar selected_date;
+    Calendar calendar;
+
     Unbinder unbinder;
     @BindView(R.id.recycle_time_slot)
     RecyclerView recycle_time_slot;
@@ -60,58 +68,64 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
     BroadcastReceiver displayTimeSlot = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             Calendar date = Calendar.getInstance();
             date.add(Calendar.DATE,0);
-            loadAvailableTimeSlotOfHospital(Common.currentHospital.getId(),simpleDateFormat.format(date.getTime()));
+
+            loadAvailableTimeSlotOfHospital(hospitalId,simpleDateFormat.format(date.getTime()));
         }
 
-        private void loadAvailableTimeSlotOfHospital(String id, String date) {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
-                    .child("hospitals").child(Common.currentHospital.getCity()).child("hospitals").child(id);
-            ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if (task.isSuccessful())
+
+    };
+    private void loadAvailableTimeSlotOfHospital(String id, String date) {
+        Log.d("Aaa",date);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child("hospitals").child(id);
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    DataSnapshot snapshot = task.getResult();
+                    Log.d("snapshot", String.valueOf(snapshot));
+                    if (snapshot.exists())
                     {
-                        DataSnapshot snapshot = task.getResult();
-                        if (snapshot.exists())
-                        {
-                            DatabaseReference bookDate = FirebaseDatabase.getInstance().getReference()
-                                    .child("hospitals").child(Common.currentHospital.getCity()).child("hospitals").child(Common.currentHospital.getId())
-                                    .child(date);
-                            bookDate.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists())
+                        DatabaseReference bookDate = FirebaseDatabase.getInstance().getReference()
+                                .child("hospitals").child(id)
+                                .child(date.toString());
+                        Log.d("BookDate", String.valueOf(bookDate));
+                        bookDate.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists())
+                                {
+                                    List<TimeSlot> timeSlots = new ArrayList<>();
+                                    for (DataSnapshot snapshot1 : snapshot.getChildren())
                                     {
-                                        List<TimeSlot> timeSlots = new ArrayList<>();
-                                        for (DataSnapshot snapshot1 : snapshot.getChildren())
-                                        {
-                                            TimeSlot timeSlot = snapshot1.getValue(TimeSlot.class);
-                                            timeSlots.add(timeSlot);
-                                            timeSlotLoadListener.onTimeSlotLoadSuccess(timeSlots);
-                                        }
-                                    }else
-                                    {
-                                        timeSlotLoadListener.onTimeSlotLoadEmpty();
+                                        TimeSlot timeSlot = snapshot1.getValue(TimeSlot.class);
+                                        timeSlots.add(timeSlot);
+                                        timeSlotLoadListener.onTimeSlotLoadSuccess(timeSlots);
                                     }
+                                }else
+                                {
+                                    timeSlotLoadListener.onTimeSlotLoadEmpty();
                                 }
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                }
-                            });
-                        }
+                            }
+                        });
                     }
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    timeSlotLoadListener.onTimeSlotLoadFailed(e.getMessage());
-                }
-            });
-        }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                timeSlotLoadListener.onTimeSlotLoadFailed(e.getMessage());
+            }
+        });
     };
     static  BookingStep2Fragment instance;
 
@@ -129,8 +143,7 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
         localBroadcastManager.registerReceiver(displayTimeSlot,new IntentFilter(Common.KEY_DISPLAY_TIME_SLOT));
         simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy");
 
-        selected_date = Calendar.getInstance();
-        selected_date.add(Calendar.DATE,0);
+
 
 
     }
@@ -148,6 +161,8 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
         View itemView = inflater.inflate(R.layout.fragment_booking_step_two,container,false);
         unbinder = ButterKnife.bind(this,itemView);
 
+        bookingFor2UsersActivity = (BookingFor2UsersActivity) getActivity();
+
         init(itemView);
         return  itemView;
     }
@@ -157,11 +172,21 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
         GridLayoutManager  gridLayoutManager = new GridLayoutManager(getActivity(),3);
         recycle_time_slot.setLayoutManager(gridLayoutManager);
         recycle_time_slot.addItemDecoration(new SpacesItemDecoration(8));
+        hospitalId = bookingFor2UsersActivity.getHospitalId();
+        Log.d("HosCurrent", hospitalId);
 
-        Calendar startDate = Calendar.getInstance();
-        startDate.add(Calendar.DATE,0);
-        Calendar endDate = Calendar.getInstance();
-        endDate.add(Calendar.DATE,2);
+//        Calendar startDate = Calendar.getInstance();
+//        startDate.add(Calendar.DATE,0);
+//        Calendar endDate = Calendar.getInstance();
+//        endDate.add(Calendar.DATE,2);
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
+
+                loadAvailableTimeSlotOfHospital(hospitalId,i2+"_"+(i1+1)+"_"+i);
+            }
+        });
+
 
 
     }

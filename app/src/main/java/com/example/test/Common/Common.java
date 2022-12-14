@@ -1,8 +1,11 @@
 package com.example.test.Common;
 
 import com.example.test.Model.AllHospitals;
+import com.example.test.Model.Hospital;
 import com.example.test.Model.TimeSlot;
+import com.example.test.Model.User;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Common {
@@ -14,10 +17,12 @@ public class Common {
     public static final Object DISABLE_TAG = "DISABLE";
     public static final String KEY_TIME_SLOT = "TIME_SLOT";
     public static final String KEY_CONFIRM_BOOKING = "CONFIRM_BOOKING";
-    public static AllHospitals currentHospital;
+    public static Hospital currentHospital;
     public static int step = 0;
     public static int currentTimeSlot=-1;
     public static Calendar currentDate = Calendar.getInstance();
+    public static User currentUser;
+    public static SimpleDateFormat simpleFormat = new SimpleDateFormat("dd_MM_yyyy");
 
     public static String convertTimeSLotToString(int slot) {
         switch (slot)

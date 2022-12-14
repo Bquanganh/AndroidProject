@@ -154,7 +154,7 @@ public class HospitalRegistrationActivity extends AppCompatActivity {
                                 userInfo.put("search","search"+bloodGroup);
 
                                 hospitalDatabase =FirebaseDatabase.getInstance().getReference()
-                                        .child("hospitals").child(city).child("hospitals").child(currentUserId);
+                                        .child("hospitals").child(currentUserId);
                                 HashMap hospitalInfo = new HashMap();
                                 hospitalInfo.put("id",currentUserId);
                                 hospitalInfo.put("name",fullName);

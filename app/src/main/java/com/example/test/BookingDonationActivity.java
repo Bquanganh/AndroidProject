@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import com.example.test.Adapter.BookingAdapter;
 import com.example.test.Adapter.HospitalAdapter;
+import com.example.test.Model.AllHospitals;
 import com.example.test.Model.Hospital;
 import com.example.test.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,12 +59,15 @@ public class BookingDonationActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+                List<AllHospitals> list = new ArrayList<>();
                 userList.clear();
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Hospital hospital = dataSnapshot.getValue(Hospital.class);
                     userList.add(hospital);
+
                 }
+
+
                 userAdapter.notifyDataSetChanged();
             }
             @Override

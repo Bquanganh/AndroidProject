@@ -1,6 +1,8 @@
 package com.example.test.Model;
 
-public class Hospital {
+import java.io.Serializable;
+
+public class Hospital implements Serializable {
     String name,type, bloodGroup, email, id,profilepictureurl, idNumber, search,address,city;
     public Hospital(){}
     public Hospital(String name, String bloodGroup, String email, String id, String profilepictureurl, String idNumber, String search, String type,String address,String city) {

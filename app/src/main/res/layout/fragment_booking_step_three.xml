@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
                 android:textStyle="bold"
-                android:text="10h00 at 12/12/2022"
+                android:text=""
                 android:textSize="14sp"
                 android:layout_marginLeft="4dp"
                 />
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
                 android:textStyle="bold"
-                android:text="Quang ANh"
+                android:text=""
                 android:textSize="14sp"
                 android:layout_marginLeft="4dp"
                 />
@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/txt_hospital_name"
-            android:text="Benh Vien Da Nang"
+            android:text=""
             android:textAllCaps="true"
             android:textStyle="bold"/>
         <LinearLayout
@@ -89,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="benhviendanang@gmail.com"
+                android:text=""
                 android:textSize="14sp"
                 android:layout_marginLeft="4dp"
                 />
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
                 android:textStyle="bold"
-                android:text="12321312321"
+                android:text=""
                 android:textSize="14sp"
                 android:layout_marginLeft="4dp"
                 />
@@ -152,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
                 android:textStyle="bold"
-                android:text="123 Nguyen Trai, Da Nang"
+                android:text=""
                 android:textSize="14sp"
                 android:layout_marginLeft="4dp"
                 />

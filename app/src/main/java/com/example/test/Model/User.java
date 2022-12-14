@@ -1,6 +1,8 @@
 package com.example.test.Model;
 
-public class User {
+import java.io.Serializable;
+
+public class User  implements Serializable {
     String name, bloodGroup, email, id,profilepictureurl, idNumber, search, type;
 
     public User() {

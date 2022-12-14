@@ -85,26 +85,28 @@ public class MyTimeSlotAdapter extends RecyclerView.Adapter<MyTimeSlotAdapter.My
         {
             cardViewList.add(holder.card_time_slot);
         }
-        holder.setRecycleItemSelected(new RecycleItemSelected() {
-            @Override
-            public void onItemSelectedListener(View view, int pos) {
-                for (CardView cardView: cardViewList)
-                {
-                    if (cardView.getTag()==null)
-                    {
-                        cardView.setBackgroundColor(context.getResources()
-                        .getColor(R.color.white));
-                    }
-                }
-                holder.card_time_slot.setCardBackgroundColor(context.getResources()
-                .getColor(R.color.purple_200));
 
-                Intent i = new Intent(Common.KEY_ENABLE_BUTTON_NEXT);
-                i.putExtra(Common.KEY_TIME_SLOT,pos);
-                i.putExtra(Common.KEY_STEP,3);
-                localBroadcastManager.sendBroadcast(i);
-            }
-        });
+            holder.setRecycleItemSelected(new RecycleItemSelected() {
+                @Override
+                public void onItemSelectedListener(View view, int pos) {
+                    for (CardView cardView: cardViewList)
+                    {
+                        if (cardView.getTag()==null)
+                        {
+                            cardView.setCardBackgroundColor(context.getResources()
+                                    .getColor(R.color.white));
+                        }
+                    }
+                    holder.card_time_slot.setCardBackgroundColor(context.getResources()
+                            .getColor(R.color.purple_200));
+
+                    Intent i = new Intent(Common.KEY_ENABLE_BUTTON_NEXT);
+                    i.putExtra(Common.KEY_TIME_SLOT,pos);
+                    i.putExtra(Common.KEY_STEP,3);
+                    localBroadcastManager.sendBroadcast(i);
+                }
+            });
+
     }
 
     @Override

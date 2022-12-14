@@ -76,6 +76,11 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
 
                     Intent i = new Intent(context, BookingFor2UsersActivity.class);
                     i.putExtra("city",position);
+                    i.putExtra("hospitalId",hospital.getId());
+                    Bundle bundle = new Bundle();
+                    bundle.putString("hospitalName",holder.userName.toString());
+//                    bundle.putString("hospitalId",hospital.getId());
+                    bundle.putString("hospitalAddress",holder.userAddress.toString());
                     context.startActivity(i);
             }
         });

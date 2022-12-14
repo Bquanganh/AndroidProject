@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
@@ -23,8 +24,20 @@ import android.widget.Toast;
 import com.example.test.Adapter.MyViewPagerAdapter;
 import com.example.test.Common.Common;
 import com.example.test.Common.NonSwoperViewPager;
+import com.example.test.Fragments.BookingStep2Fragment;
+import com.example.test.Fragments.BookingStep3Fragment;
+import com.example.test.Model.AllHospitals;
+import com.example.test.Model.Hospital;
+import com.example.test.Model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.shuhart.stepview.StepView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +52,10 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private StepView stepView;
     private NonSwoperViewPager viewPager;
+    private String hospitalId;
 
+     public List<Hospital> list;
+    public User user;
 
     private void loadTimeSchedule(String hospitalID) {
         Intent i = new Intent( Common.KEY_DISPLAY_TIME_SLOT);
@@ -70,10 +86,22 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public String getHospitalId() {
+        return hospitalId;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_for2_users);
+        Intent intent = getIntent();
+
+
+        hospitalId = intent.getStringExtra("hospitalId");
+        Log.d("id",hospitalId);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.commit();
+
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -90,6 +118,10 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         localBroadcastManager.registerReceiver(buttonNextReceiver,new IntentFilter(Common.KEY_ENABLE_BUTTON_NEXT));
         setupStepView();
         setupColorButton();
+
+
+
+
 
         //View
         viewPager.setAdapter(new MyViewPagerAdapter(getSupportFragmentManager()));
@@ -124,14 +156,15 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
                     Common.step++;
                     if (Common.step ==1){
                         if (Common.currentHospital !=null){
-                        loadTimeSchedule(Common.currentHospital.getId());
+                        loadTimeSchedule(hospitalId);
                         }
                     }else if (Common.step ==2){
                         if (Common.currentHospital !=null){
-                            loadTimeSchedule(Common.currentHospital.getId());
+                            loadTimeSchedule(hospitalId);
                         }
                     }else if (Common.step ==3){
                         if (Common.currentTimeSlot !=1){
+                            loadTimeSchedule(hospitalId);
                             confirmBooking();
                         }
                     }
@@ -157,6 +190,7 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         });
 
     }
+
 
     private void setupColorButton() {
         if(btn_next_step.isEnabled()){
