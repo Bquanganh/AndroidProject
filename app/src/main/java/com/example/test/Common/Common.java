@@ -23,6 +23,7 @@ public class Common {
     public static Calendar currentDate = Calendar.getInstance();
     public static User currentUser;
     public static SimpleDateFormat simpleFormat = new SimpleDateFormat("dd_MM_yyyy");
+    public static String currentRecipient;
 
     public static String convertTimeSLotToString(int slot) {
         switch (slot)

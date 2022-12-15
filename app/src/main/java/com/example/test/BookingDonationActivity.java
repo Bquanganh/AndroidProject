@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import android.widget.Button;
 
 import com.example.test.Adapter.BookingAdapter;
 import com.example.test.Adapter.HospitalAdapter;
+import com.example.test.Common.Common;
 import com.example.test.Model.AllHospitals;
 import com.example.test.Model.Hospital;
 import com.example.test.Model.User;
@@ -29,9 +31,15 @@ public class BookingDonationActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     public Button accept;
+    public String idOfRecipient;
     List<String> idList;
     List<Hospital> userList;
     HospitalAdapter userAdapter;
+
+    public String getIdOfRecipient() {
+        return idOfRecipient;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +58,12 @@ public class BookingDonationActivity extends AppCompatActivity {
         userAdapter = new HospitalAdapter(BookingDonationActivity.this,userList);
         recyclerView.setAdapter(userAdapter);
         idList = new ArrayList<>();
+        Intent intent = getIntent();
+        idOfRecipient=intent.getStringExtra("idOfRecipient");
+
+        Common.currentRecipient = idOfRecipient;
+
+
         showUsers();
     }
     private void showUsers() {

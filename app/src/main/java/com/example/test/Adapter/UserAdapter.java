@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.module.AppGlideModule;
 import com.example.test.BookingDonationActivity;
+import com.example.test.BookingFor2UsersActivity;
 import com.example.test.Email.javaMailApi;
 import com.example.test.Model.User;
 import com.example.test.R;
@@ -87,6 +88,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, BookingDonationActivity.class);
+                intent.putExtra("idOfRecipient",user.getId());
                 context.startActivity(intent);
 //                new AlertDialog.Builder(context)
 //                        .setTitle("SEND EMAIL").setMessage("Send mail to" + user.getName()+ "?")

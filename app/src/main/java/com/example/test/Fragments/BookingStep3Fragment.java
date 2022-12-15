@@ -1,7 +1,9 @@
 package com.example.test.Fragments;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -18,12 +20,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.test.BookingDonationActivity;
 import com.example.test.BookingFor2UsersActivity;
 import com.example.test.Common.Common;
+import com.example.test.Email.javaMailApi;
 import com.example.test.Model.BookingInformation;
 import com.example.test.Model.Hospital;
 import com.example.test.Model.User;
 import com.example.test.R;
+import com.example.test.SendEmailActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -47,11 +52,15 @@ public class BookingStep3Fragment extends Fragment {
     LocalBroadcastManager localBroadcastManager;
     Unbinder unbinder;
 
+    private  Context context;
+
     private TextView txt_hospital_name,txt_booking_time_text,txt_booking_location_text,txt_hospital_web,txt_hospital_phone_text,txt_hospital_open_hours,txt_hospital_address_text;
     private Button btn_confirm;
     public Hospital hospital;
-    public User userSelected;
+    public User userSelected,userRecipient;
     private BookingFor2UsersActivity bookingFor2UsersActivity;
+    private BookingDonationActivity bookingDonationActivity;
+    private String idOfRecipient;
 
 
 
@@ -96,7 +105,11 @@ public class BookingStep3Fragment extends Fragment {
         localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
         localBroadcastManager.registerReceiver(confirmBookingReceive,new IntentFilter(Common.KEY_CONFIRM_BOOKING));
         bookingFor2UsersActivity = (BookingFor2UsersActivity) getActivity();
+
         String hospitalID = bookingFor2UsersActivity.getHospitalId();
+
+        idOfRecipient = bookingFor2UsersActivity.getIdOfRecipient();
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("hospitals").child(hospitalID);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -114,13 +127,27 @@ public class BookingStep3Fragment extends Fragment {
         });
         Log.d("HospiralData", String.valueOf(hospital));
 
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("hospitals").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 User user = snapshot.getValue(User.class);
                 userSelected=user;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        DatabaseReference recipientRef = FirebaseDatabase.getInstance().getReference().child("users").child(idOfRecipient);
+        recipientRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                User user = snapshot.getValue(User.class);
+                userRecipient=user;
             }
 
             @Override
@@ -146,6 +173,7 @@ public class BookingStep3Fragment extends Fragment {
         unbinder = ButterKnife.bind(this,view);
 
 
+
         txt_hospital_name= view.findViewById(R.id.txt_hospital_name);
         txt_booking_time_text= view.findViewById(R.id.txt_booking_time_text);
         txt_booking_location_text= view.findViewById(R.id.txt_booking_location_text);
@@ -161,38 +189,155 @@ public class BookingStep3Fragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                if (idOfRecipient == null) {
+                    //Create booking information
+                    BookingInformation bookingInformation = new BookingInformation();
+                    Log.d("TestDatabase", hospital.getId());
+                    bookingInformation.setHospitalName(hospital.getName());
+                    bookingInformation.setHospitalId(hospital.getId());
+                    bookingInformation.setCustomerName(userSelected.getName());
+                    bookingInformation.setHospitalAddress(hospital.getAddress());
+                    bookingInformation.setCustomerId(userSelected.getId());
+                    bookingInformation.setTime(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
+                            .append(" at ")
+                            .append(simpleDateFormat.format(Common.currentDate.getTime())).toString());
+                    bookingInformation.setSlot(Long.valueOf(Common.currentTimeSlot));
 
-                //Create booking information
-                BookingInformation bookingInformation = new BookingInformation();
-                Log.d("TestDatabase",  hospital.getId());
-                bookingInformation.setHospitalName(hospital.getName());
-                bookingInformation.setHospitalId(hospital.getId());
-                bookingInformation.setCustomerName(userSelected.getName());
-                bookingInformation.setHospitalAddress(hospital.getAddress());
-                bookingInformation.setCustomerId(userSelected.getId());
-                bookingInformation.setTime(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
-                        .append(" at ")
-                        .append(simpleDateFormat.format(Common.currentDate.getTime())).toString());
-                bookingInformation.setSlot(Long.valueOf(Common.currentTimeSlot));
+                    //Submit to hospital document
+                    DatabaseReference bookDate = FirebaseDatabase.getInstance().getReference()
+                            .child("hospitals").child(hospital.getId())
+                            .child(Common.simpleFormat.format(Common.currentDate.getTime()))
+                            .child(String.valueOf(Common.currentTimeSlot));
+                    // Write data
+                    bookDate.setValue(bookingInformation).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            new AlertDialog.Builder(view.getContext())
+                                    .setTitle("Confirm Information").setMessage("Do you want send mail to" + hospital.getName() + "?")
+                                    .setCancelable(false)
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                                                    .child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                            reference.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    String nameOfSender = snapshot.child("name").getValue().toString();
+                                                    String email = snapshot.child("email").getValue().toString();
+                                                    String phone = snapshot.child("idNumber").getValue().toString();
+                                                    String blood = snapshot.child("bloodGroup").getValue().toString();
 
-                //Submit to hospital document
-                DatabaseReference bookDate = FirebaseDatabase.getInstance().getReference()
-                        .child("hospitals").child(hospital.getId())
-                        .child(Common.simpleFormat.format(Common.currentDate.getTime()))
-                        .child(String.valueOf(Common.currentTimeSlot));
-                // Write data
-                bookDate.setValue(bookingInformation).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        getActivity().finish();// Close activity
-                        Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                                                    String mEmail = hospital.getEmail();
+                                                    String mSubject = "BLOOD DONATION";
+                                                    String mMessage = "Hello " + hospital.getName() + ", " + nameOfSender + " would like blood donation from you. Here's his/her detail:\n"
+                                                            + "Name: " + nameOfSender + "\n" +
+                                                            "Phone Number: " + phone + "\n" +
+                                                            "Email: " + email + "\n" +
+                                                            "Blood Group: " + blood + "\n" +
+                                                            "Time slot: " + new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
+                                                            .append(" at ")
+                                                            .append(simpleDateFormat.format(Common.currentDate.getTime())) + "\n" +
+                                                            "Kindly Reach out to him/her. Thank you!\n" +
+                                                            "BLOOD DONATION APP -- DONATE BLOOD, SAVE LIVES";
+                                                    javaMailApi JavaMaikApi = new javaMailApi(view.getContext(), mEmail, mSubject, mMessage);
+                                                    JavaMaikApi.execute();
+
+                                                    DatabaseReference senderRef = FirebaseDatabase.getInstance().getReference("emails")
+                                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                    senderRef.child(hospital.getId()).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                DatabaseReference receiverRef = FirebaseDatabase.getInstance().getReference("hospitalEmails")
+                                                                        .child(hospital.getId());
+                                                                receiverRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+
+                                                            }
+
+                                                        }
+                                                    });
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                        }
+                                    })
+                                    .setNegativeButton("No", null)
+                                    .show();
+//                        getActivity().finish();// Close activity
+                            Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    //Create booking information
+                    BookingInformation bookingInformation = new BookingInformation();
+                    Log.d("TestDatabase", hospital.getId());
+                    bookingInformation.setHospitalName(hospital.getName());
+                    bookingInformation.setHospitalId(hospital.getId());
+                    bookingInformation.setCustomerName(userSelected.getName());
+                    bookingInformation.setHospitalAddress(hospital.getAddress());
+                    bookingInformation.setCustomerId(userSelected.getId());
+                    bookingInformation.setRecipientName(userRecipient.getName());
+                    bookingInformation.setRecipientId(userRecipient.getId());
+                    bookingInformation.setRecipientPhone(userRecipient.getIdNumber());
+                    bookingInformation.setTime(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
+                            .append(" at ")
+                            .append(simpleDateFormat.format(Common.currentDate.getTime())).toString());
+                    bookingInformation.setSlot(Long.valueOf(Common.currentTimeSlot));
+
+                    //Submit to hospital document
+                    DatabaseReference bookDate = FirebaseDatabase.getInstance().getReference()
+                            .child("hospitals").child(hospital.getId())
+                            .child(Common.simpleFormat.format(Common.currentDate.getTime()))
+                            .child(String.valueOf(Common.currentTimeSlot));
+                    // Write data
+                    bookDate.setValue(bookingInformation).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            new AlertDialog.Builder(view.getContext())
+                                    .setTitle("Confirm Information").setMessage("Do you want choose" + hospital.getName() + "and " + userRecipient.getName() + "?")
+                                    .setCancelable(false)
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            DatabaseReference senderRef = FirebaseDatabase.getInstance().getReference("emails")
+                                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                            senderRef.child(userRecipient.getId()).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DatabaseReference receiverRef = FirebaseDatabase.getInstance().getReference("emails")
+                                                                .child(userRecipient.getId());
+                                                        receiverRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+                                                        receiverRef.child(hospital.getId()).setValue(true);
+
+                                                    }
+                                                }
+                                            });
+                                            Intent intent = new Intent(view.getContext(),SendEmailActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    })
+                                    .setNegativeButton("No", null)
+                                    .show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
         return  view;

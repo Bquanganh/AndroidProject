@@ -158,10 +158,10 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
         recycle_time_slot.setLayoutManager(gridLayoutManager);
         recycle_time_slot.addItemDecoration(new SpacesItemDecoration(8));
         hospitalId = bookingFor2UsersActivity.getHospitalId();
-        Log.d("HosCurrent", hospitalId);
+
         Calendar date = Calendar.getInstance();
         date.add(Calendar.DATE,0);
-        Log.d("Test",hospitalId);
+
         loadAvailableTimeSlotOfHospital(hospitalId,simpleDateFormat.format(date.getTime()));
 
 //        Calendar startDate = Calendar.getInstance();

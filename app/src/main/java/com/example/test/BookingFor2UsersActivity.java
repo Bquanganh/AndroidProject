@@ -52,7 +52,8 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private StepView stepView;
     private NonSwoperViewPager viewPager;
-    private String hospitalId;
+    private String hospitalId,idOfRecipient;
+    private BookingDonationActivity bookingDonationActivity;
 
      public List<Hospital> list;
     public User user;
@@ -87,6 +88,10 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         return hospitalId;
     }
 
+    public String getIdOfRecipient() {
+        return idOfRecipient;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +100,9 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
 
 
         hospitalId = intent.getStringExtra("hospitalId");
-        Log.d("id",hospitalId);
+
+
+//        Log.d("id",hospitalId);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.commit();
 
@@ -116,6 +123,12 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         setupStepView();
         setupColorButton();
         Log.d("Step", String.valueOf(Common.step));
+
+
+        idOfRecipient = Common.currentRecipient;
+
+
+        Log.d("Test12h38", Common.currentRecipient);
 
 
 
