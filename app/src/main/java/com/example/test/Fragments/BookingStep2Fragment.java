@@ -161,6 +161,10 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
 
         Calendar date = Calendar.getInstance();
         date.add(Calendar.DATE,0);
+        if (hospitalId==null)
+        {
+            hospitalId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
 
         loadAvailableTimeSlotOfHospital(hospitalId,simpleDateFormat.format(date.getTime()));
 

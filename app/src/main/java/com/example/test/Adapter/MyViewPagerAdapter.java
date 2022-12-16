@@ -23,7 +23,6 @@ public class MyViewPagerAdapter extends FragmentPagerAdapter {
                 return BookingStep2Fragment.getInstance();
             case 1:
                 return BookingStep3Fragment.getInstance();
-
         }
         return null;
     }

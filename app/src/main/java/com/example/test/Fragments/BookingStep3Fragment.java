@@ -61,6 +61,7 @@ public class BookingStep3Fragment extends Fragment {
     private BookingFor2UsersActivity bookingFor2UsersActivity;
     private BookingDonationActivity bookingDonationActivity;
     private String idOfRecipient;
+    private  String hospitalID;
 
 
 
@@ -75,8 +76,22 @@ public class BookingStep3Fragment extends Fragment {
 
     };
     private void setData() {
+        if (hospitalID !=null)
+        {
 
-        txt_booking_location_text.setText(userSelected.getName());
+            txt_booking_location_text.setText(userSelected.getName());
+            txt_hospital_phone_text.setText(hospital.getIdNumber());
+            txt_booking_time_text.setText(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
+                    .append(" at ")
+                    .append(simpleDateFormat.format(Common.currentDate.getTime())));
+
+            txt_hospital_address_text.setText(hospital.getAddress());
+            txt_hospital_web.setText(hospital.getEmail());
+
+            txt_hospital_name.setText(hospital.getName());
+        }
+        Log.e("AAAAAA",hospitalID);
+        txt_booking_location_text.setText(userRecipient.getName());
         txt_hospital_phone_text.setText(hospital.getIdNumber());
         txt_booking_time_text.setText(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
                 .append(" at ")
@@ -86,6 +101,7 @@ public class BookingStep3Fragment extends Fragment {
         txt_hospital_web.setText(hospital.getEmail());
 
         txt_hospital_name.setText(hospital.getName());
+
     }
 
 
@@ -106,10 +122,13 @@ public class BookingStep3Fragment extends Fragment {
         localBroadcastManager.registerReceiver(confirmBookingReceive,new IntentFilter(Common.KEY_CONFIRM_BOOKING));
         bookingFor2UsersActivity = (BookingFor2UsersActivity) getActivity();
 
-        String hospitalID = bookingFor2UsersActivity.getHospitalId();
+         hospitalID = bookingFor2UsersActivity.getHospitalId();
 
         idOfRecipient = bookingFor2UsersActivity.getIdOfRecipient();
-
+        if (hospitalID==null)
+        {
+            hospitalID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("hospitals").child(hospitalID);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -141,20 +160,25 @@ public class BookingStep3Fragment extends Fragment {
 
             }
         });
-        DatabaseReference recipientRef = FirebaseDatabase.getInstance().getReference().child("users").child(idOfRecipient);
-        recipientRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                User user = snapshot.getValue(User.class);
-                userRecipient=user;
-            }
+        if (idOfRecipient!=null)
+        {
+            DatabaseReference recipientRef = FirebaseDatabase.getInstance().getReference().child("users").child(idOfRecipient);
+            recipientRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    User user = snapshot.getValue(User.class);
+                    userRecipient=user;
+                }
 
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
 
 
     }
@@ -189,7 +213,7 @@ public class BookingStep3Fragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (idOfRecipient == null) {
+                if (idOfRecipient==null) {
                     //Create booking information
                     BookingInformation bookingInformation = new BookingInformation();
                     Log.d("TestDatabase", hospital.getId());
@@ -279,6 +303,7 @@ public class BookingStep3Fragment extends Fragment {
                         }
                     });
                 } else {
+                    Log.d("AAAAa", hospital.getId());
                     //Create booking information
                     BookingInformation bookingInformation = new BookingInformation();
                     Log.d("TestDatabase", hospital.getId());
@@ -312,20 +337,24 @@ public class BookingStep3Fragment extends Fragment {
                                         public void onClick(DialogInterface dialog, int which) {
                                             DatabaseReference senderRef = FirebaseDatabase.getInstance().getReference("emails")
                                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                            senderRef.child(userRecipient.getId()).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            senderRef.addValueEventListener(new ValueEventListener() {
                                                 @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        DatabaseReference receiverRef = FirebaseDatabase.getInstance().getReference("emails")
-                                                                .child(userRecipient.getId());
-                                                        receiverRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
-                                                        receiverRef.child(hospital.getId()).setValue(true);
-
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    DatabaseReference inforBooking = FirebaseDatabase.getInstance().getReference("emails")
+                                                            .child(userRecipient.getId()).child(userSelected.getName());
+                                                    inforBooking.child("recipient").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                    if (Common.statusBooking !=1)
+                                                    {
+                                                        inforBooking.child("hospital").setValue(hospital.getId());
                                                     }
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
                                                 }
                                             });
-                                            Intent intent = new Intent(view.getContext(),SendEmailActivity.class);
-                                            startActivity(intent);
                                         }
                                     })
                                     .setNegativeButton("No", null)

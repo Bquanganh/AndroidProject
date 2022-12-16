@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.module.AppGlideModule;
 import com.example.test.Adapter.UserAdapter;
+import com.example.test.Common.Common;
 import com.example.test.Model.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -109,18 +110,21 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
                 }
                 if(type.equals("recipient")){
                     readDonors();
-//                    readHospital();
+//
                 }else{
-                    readDonors();
-                    readRecipients();
+                    readForHospital();
                 }
             }
+
+
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
+
 
 
         nav_user_image = nav_view.getHeaderView(0).findViewById(R.id.nav_user_image);
@@ -176,8 +180,10 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
         });
 
     }
-
-
+    private void readForHospital() {
+        Intent intent = new Intent(DisplayActivity.this,BookingForHospital.class);
+        startActivity(intent);
+    }
 
     private void readDonors() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
@@ -207,30 +213,9 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
     }
 
     private void readRecipients() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
-        Query query = reference.orderByChild("type").equalTo("recipient");
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    User user = dataSnapshot.getValue(User.class);
-                    userList.add(user);
-                }
-                userAdapter.notifyDataSetChanged();
-                progressbar.setVisibility(View.GONE);
 
-                if (userList.isEmpty()){
-                    Toast.makeText(DisplayActivity.this,"No recipients",Toast.LENGTH_SHORT).show();
-                    progressbar.setVisibility(View.GONE);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        Intent intent = new Intent(DisplayActivity.this,SendEmailActivity.class);
+        startActivity(intent);
     }
 
 //    private void readHospital() {

@@ -125,10 +125,11 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         Log.d("Step", String.valueOf(Common.step));
 
 
-        idOfRecipient = Common.currentRecipient;
+            idOfRecipient = Common.currentRecipient;
 
 
-        Log.d("Test12h38", Common.currentRecipient);
+
+
 
 
 
@@ -174,6 +175,7 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
                     }else if (Common.step ==1){
 
                             confirmBooking();
+                        btn_next_step.setEnabled(false);
 
                     }
 

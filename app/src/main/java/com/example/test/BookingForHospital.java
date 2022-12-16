@@ -1,23 +1,23 @@
 package com.example.test;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.widget.Button;
-
-import com.example.test.Adapter.BookingAdapter;
+import com.example.test.Adapter.DonorAdapter;
 import com.example.test.Adapter.HospitalAdapter;
+import com.example.test.Adapter.UserAdapter;
 import com.example.test.Common.Common;
 import com.example.test.Model.AllHospitals;
 import com.example.test.Model.Hospital;
 import com.example.test.Model.User;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,14 +27,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-public class BookingDonationActivity extends AppCompatActivity {
+
+public class BookingForHospital extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     public Button accept;
     public String idOfRecipient;
     List<String> idList;
-    List<Hospital> userList;
-    HospitalAdapter userAdapter;
+    List<User> userList;
+    DonorAdapter userAdapter;
 
     public String getIdOfRecipient() {
         return idOfRecipient;
@@ -55,7 +56,7 @@ public class BookingDonationActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         userList = new ArrayList<>();
-        userAdapter = new HospitalAdapter(BookingDonationActivity.this,userList);
+        userAdapter = new DonorAdapter(BookingForHospital.this,userList);
         recyclerView.setAdapter(userAdapter);
         idList = new ArrayList<>();
         Intent intent = getIntent();
@@ -70,15 +71,15 @@ public class BookingDonationActivity extends AppCompatActivity {
     private void showUsers() {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
-        Query query = reference.orderByChild("type").equalTo("hospital");
+        Query query = reference.orderByChild("type").equalTo("donor");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<AllHospitals> list = new ArrayList<>();
                 userList.clear();
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    Hospital hospital = dataSnapshot.getValue(Hospital.class);
-                    userList.add(hospital);
+                    User user = dataSnapshot.getValue(User.class);
+                    userList.add(user);
 
                 }
 
@@ -100,6 +101,4 @@ public class BookingDonationActivity extends AppCompatActivity {
         }
 
     }
-
-
 }
