@@ -108,7 +108,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
                     readRecipients();
 //                    readHospital();
                 }
-                if(type.equals("recipient")){
+                else if(type.equals("recipient")){
                     readDonors();
 //
                 }else{
@@ -213,7 +213,6 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
     }
 
     private void readRecipients() {
-
         Intent intent = new Intent(DisplayActivity.this,SendEmailActivity.class);
         startActivity(intent);
     }

@@ -23,6 +23,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.test.BookingDonationActivity;
 import com.example.test.BookingFor2UsersActivity;
 import com.example.test.Common.Common;
+import com.example.test.DisplayActivity;
 import com.example.test.Email.javaMailApi;
 import com.example.test.Model.BookingInformation;
 import com.example.test.Model.Hospital;
@@ -313,6 +314,8 @@ public class BookingStep3Fragment extends Fragment {
                     bookingInformation.setHospitalAddress(hospital.getAddress());
                     bookingInformation.setCustomerId(userSelected.getId());
                     bookingInformation.setRecipientName(userRecipient.getName());
+                    bookingInformation.setCustomerPhone(userSelected.getIdNumber());
+                    bookingInformation.setCustomerEmail(userSelected.getEmail());
                     bookingInformation.setRecipientId(userRecipient.getId());
                     bookingInformation.setRecipientPhone(userRecipient.getIdNumber());
                     bookingInformation.setTime(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
@@ -342,11 +345,10 @@ public class BookingStep3Fragment extends Fragment {
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                     DatabaseReference inforBooking = FirebaseDatabase.getInstance().getReference("emails")
                                                             .child(userRecipient.getId()).child(userSelected.getName());
-                                                    inforBooking.child("recipient").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                                    if (Common.statusBooking !=1)
-                                                    {
-                                                        inforBooking.child("hospital").setValue(hospital.getId());
-                                                    }
+                                                    inforBooking.setValue(bookingInformation);
+                                                    Intent intent = new Intent(context, DisplayActivity.class);
+                                                    Toast.makeText(context,"Successful",Toast.LENGTH_LONG);
+                                                    startActivity(intent);
 
                                                 }
 

@@ -1,13 +1,13 @@
 package com.example.test.Model;
 
-public class BookingInformation {
+public class RequestDonation {
     private  String customerName, customerPhone,customerEmail, time, hospitalName, hospitalId,hospitalAddress,customerId,recipientId,recipientName,recipientPhone;
     private Long slot;
 
-    public BookingInformation() {
+    public RequestDonation() {
     }
 
-    public BookingInformation(String customerName, String customerPhone, String time, String hospitalName, String hospitalId, String hospitalAddress, String customerId, String recipientId, String recipientName, String recipientPhone, Long slot, String customerEmail) {
+    public RequestDonation(String customerName, String customerPhone, String time, String hospitalName, String hospitalId, String hospitalAddress, String customerId, String recipientId, String recipientName, String recipientPhone, Long slot, String customerEmail) {
         this.customerName = customerName;
         this.customerPhone = customerPhone;
         this.time = time;

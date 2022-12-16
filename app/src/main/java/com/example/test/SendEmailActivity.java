@@ -9,13 +9,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.example.test.Adapter.BookingAdapter;
+import com.example.test.Adapter.RequestDonationAdapter;
 import com.example.test.Adapter.UserAdapter;
+import com.example.test.Model.BookingInformation;
+import com.example.test.Model.RequestDonation;
 import com.example.test.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -34,8 +38,10 @@ public class SendEmailActivity extends AppCompatActivity {
 
 
     List<String> idList;
-    List<User> userList;
-    BookingAdapter userAdapter;
+    List<RequestDonation> requestDonationList;
+
+
+    RequestDonationAdapter requestDonationAdapter;
 
 
 
@@ -58,9 +64,9 @@ public class SendEmailActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        userList = new ArrayList<>();
-        userAdapter = new BookingAdapter(SendEmailActivity.this,userList);
-        recyclerView.setAdapter(userAdapter);
+        requestDonationList = new ArrayList<>();
+        requestDonationAdapter = new RequestDonationAdapter(SendEmailActivity.this,requestDonationList);
+        recyclerView.setAdapter(requestDonationAdapter);
         
         idList = new ArrayList<>();
         getIdOfUsers();
@@ -73,7 +79,6 @@ public class SendEmailActivity extends AppCompatActivity {
 
 
 
-
     private void getIdOfUsers() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("emails")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -82,11 +87,15 @@ public class SendEmailActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 idList.clear();
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+
                     idList.add(dataSnapshot.getKey());
                 }
 
-                showUsers();
+
+                showSchedule();
             }
+
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -94,23 +103,25 @@ public class SendEmailActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void showUsers() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
+    private void showSchedule() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("emails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userList.clear();
+
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    User user = dataSnapshot.getValue(User.class);
+                    RequestDonation bookingInformation = dataSnapshot.getValue(RequestDonation.class);
 
                     for (String id : idList){
-                        if (user.getId().equals(id)){
-                            userList.add(user);
+                        if (bookingInformation.getCustomerName().equals(id)){
+                            requestDonationList.add(bookingInformation);
                         }
+
                     }
+
                 }
-                userAdapter.notifyDataSetChanged();
+                requestDonationAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -119,6 +130,7 @@ public class SendEmailActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
     @Override

@@ -56,13 +56,6 @@
                 android:layout_marginLeft="4dp"
                 />
         </LinearLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/txt_hospital_name"
-            android:text=""
-            android:textAllCaps="true"
-            android:textStyle="bold"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -104,7 +97,40 @@
                 android:layout_marginLeft="4dp"
                 />
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/black"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_hospital_name"
+            android:text=""
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:src="@drawable/ic_access_time"/>
+            <TextView
+                android:id="@+id/txt_hospital_open_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:text="7h30 - 17h00"
+                android:textSize="14sp"
+                android:layout_marginLeft="4dp"
+                />
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -126,24 +152,14 @@
                 android:layout_marginLeft="4dp"
                 />
         </LinearLayout>
-
         <Button
-            android:id="@+id/accept"
-            style="@style/myButtonTheme"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:text="Accept"
-            android:textAllCaps="false" />
-
-        <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_below="@+id/mainLayout"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="4dp"
-            android:background="#000" />
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_confirm"
+            android:layout_marginTop="8dp"
+            android:text="CONFIRM"
+            android:layout_gravity="center_horizontal"
+            />
     </LinearLayout>
 
 
