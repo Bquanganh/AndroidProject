@@ -1,16 +1,25 @@
 package com.example.test.Model;
 
 public class Notification {
-    String receivedId, senderId, text, date;
+    String receivedId, senderId, text, date, status;
 
     public Notification() {
     }
 
-    public Notification(String receivedId, String senderId, String text, String date) {
+    public Notification(String receivedId, String senderId, String text, String date, String status) {
         this.receivedId = receivedId;
         this.senderId = senderId;
         this.text = text;
         this.date = date;
+        this.status =status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getReceivedId() {

@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.module.AppGlideModule;
 import com.example.test.BookingDonationActivity;
 import com.example.test.BookingFor2UsersActivity;
+import com.example.test.Common.Common;
 import com.example.test.Email.javaMailApi;
 import com.example.test.Model.User;
 import com.example.test.R;
@@ -69,6 +70,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
 
         User user = userList.get(position);
 
+
         holder.type.setText(user.getType());
 
         if("donor".equalsIgnoreCase(user.getType())){
@@ -78,6 +80,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
         holder.userName.setText(user.getName());
         holder.userIdNumber.setText(user.getIdNumber());
         holder.userBloodGroup.setText(user.getBloodGroup());
+
 
         Glide.with(context).load(user.getProfilepictureurl()).error(R.mipmap.ic_launcher).into(holder.userProfileImage);
 
@@ -89,6 +92,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
             public void onClick(View v) {
                 Intent intent = new Intent(context, BookingDonationActivity.class);
                 intent.putExtra("idOfRecipient",user.getId());
+                holder.emailNow.setText(Common.statusEmail);
                 context.startActivity(intent);
 //                new AlertDialog.Builder(context)
 //                        .setTitle("SEND EMAIL").setMessage("Send mail to" + user.getName()+ "?")

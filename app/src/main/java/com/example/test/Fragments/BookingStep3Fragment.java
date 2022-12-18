@@ -27,6 +27,7 @@ import com.example.test.DisplayActivity;
 import com.example.test.Email.javaMailApi;
 import com.example.test.Model.BookingInformation;
 import com.example.test.Model.Hospital;
+import com.example.test.Model.Notification;
 import com.example.test.Model.User;
 import com.example.test.R;
 import com.example.test.SendEmailActivity;
@@ -40,8 +41,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -346,10 +350,7 @@ public class BookingStep3Fragment extends Fragment {
                                                     DatabaseReference inforBooking = FirebaseDatabase.getInstance().getReference("emails")
                                                             .child(userRecipient.getId()).child(userSelected.getName());
                                                     inforBooking.setValue(bookingInformation);
-                                                    Intent intent = new Intent(context, DisplayActivity.class);
-                                                    Toast.makeText(context,"Successful",Toast.LENGTH_LONG);
-                                                    startActivity(intent);
-
+                                                    addNotifications(userRecipient.getId(),userSelected.getId());
                                                 }
 
                                                 @Override
@@ -361,6 +362,8 @@ public class BookingStep3Fragment extends Fragment {
                                     })
                                     .setNegativeButton("No", null)
                                     .show();
+                            Intent intent = new Intent(context,DisplayActivity.class);
+                            context.startActivity(intent);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -369,8 +372,26 @@ public class BookingStep3Fragment extends Fragment {
                         }
                     });
                 }
+
+
             }
+
         });
+
+
+
         return  view;
+    }
+    private void  addNotifications(String receivedId, String senderId){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("notifications").child(receivedId);
+        String date = DateFormat.getDateInstance().format(new Date());
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("receivedId",receivedId);
+        hashMap.put("senderId",senderId);
+        hashMap.put("text","Sent you an email, kindly check it out!");
+        hashMap.put("date",date);
+        hashMap.put("status","Pending");
+
+        reference.push().setValue(hashMap);
     }
 }

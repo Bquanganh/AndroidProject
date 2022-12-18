@@ -23,8 +23,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.module.AppGlideModule;
+import com.example.test.Adapter.DonorAdapter;
+import com.example.test.Adapter.RequestDonationAdapter;
 import com.example.test.Adapter.UserAdapter;
 import com.example.test.Common.Common;
+import com.example.test.Model.AllHospitals;
+import com.example.test.Model.RequestDonation;
 import com.example.test.Model.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,7 +63,15 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
     private ProgressBar progressbar;
 
     private List<User> userList;
+    private TextView emptyView;
+    private  List<String> idList;
     private UserAdapter userAdapter;
+    private  DonorAdapter donorAdapter;
+
+    List<RequestDonation> requestDonationList;
+
+
+    RequestDonationAdapter requestDonationAdapter;
 
 
 
@@ -77,6 +89,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
         getSupportActionBar().setTitle("Blood Donation App");
 
         drawerLayout = findViewById(R.id.drawerLayout);
+
         nav_view = findViewById(R.id.nav_view);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(DisplayActivity.this,drawerLayout,
@@ -85,6 +98,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
         toggle.syncState();
 
         nav_view.setNavigationItemSelectedListener(this);
+        emptyView = findViewById(R.id.empty_view);
 
         progressbar = findViewById(R.id.progressbar);
 
@@ -93,9 +107,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         recycleView.setLayoutManager(layoutManager);
-        userList = new ArrayList<>();
-        userAdapter = new UserAdapter(this, userList);
-        recycleView.setAdapter(userAdapter);
+
 
 
 
@@ -111,7 +123,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
                 else if(type.equals("recipient")){
                     readDonors();
 //
-                }else{
+                }else if(type.equals("hospital")){
                     readForHospital();
                 }
             }
@@ -167,6 +179,13 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
                     if (type.equals("donor")){
                         nav_menu.findItem(R.id.sentEmail).setTitle("Received Emails");
                         nav_menu.findItem(R.id.notifications).setVisible(true);
+                        nav_menu.findItem(R.id.sentEmail).setVisible(false);
+                        nav_menu.findItem(R.id.bookingSchedule).setVisible(false);
+                    }else
+                    {
+                        nav_menu.findItem(R.id.notifications).setVisible(true);
+                        nav_menu.findItem(R.id.sentEmail).setVisible(false);
+                        nav_menu.findItem(R.id.bookingSchedule).setVisible(false);
                     }
 
                 }
@@ -181,26 +200,61 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
 
     }
     private void readForHospital() {
-        Intent intent = new Intent(DisplayActivity.this,BookingForHospital.class);
-        startActivity(intent);
-    }
-
-    private void readDonors() {
+        userList = new ArrayList<>();
+        donorAdapter = new DonorAdapter(DisplayActivity.this,userList);
+        recycleView.setAdapter(donorAdapter);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
         Query query = reference.orderByChild("type").equalTo("donor");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<AllHospitals> list = new ArrayList<>();
+                userList.clear();
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    User user = dataSnapshot.getValue(User.class);
+                    userList.add(user);
+
+                }
+
+
+                donorAdapter.notifyDataSetChanged();
+                emptyView.setVisibility(View.GONE);
+                progressbar.setVisibility(View.GONE);
+                if (userList.isEmpty()){
+                    Toast.makeText(DisplayActivity.this,"No Donors",Toast.LENGTH_SHORT).show();
+                    progressbar.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+    }
+
+    private void readDonors() {
+        userList = new ArrayList<>();
+        userAdapter = new UserAdapter(this, userList);
+        recycleView.setAdapter(userAdapter);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
+        Query query = reference.orderByChild("type").equalTo("donor");
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     User user = dataSnapshot.getValue(User.class);
                     userList.add(user);
                 }
                 userAdapter.notifyDataSetChanged();
+                emptyView.setVisibility(View.GONE);
                 progressbar.setVisibility(View.GONE);
 
                 if (userList.isEmpty()){
                     Toast.makeText(DisplayActivity.this,"No Donors",Toast.LENGTH_SHORT).show();
                     progressbar.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -213,8 +267,71 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
     }
 
     private void readRecipients() {
-        Intent intent = new Intent(DisplayActivity.this,SendEmailActivity.class);
-        startActivity(intent);
+        requestDonationList = new ArrayList<>();
+        requestDonationAdapter = new RequestDonationAdapter(DisplayActivity.this,requestDonationList);
+        recycleView.setAdapter(requestDonationAdapter);
+        emptyView = findViewById(R.id.empty_view);
+        idList = new ArrayList<>();
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("emails")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                idList.clear();
+                if (snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+
+                        idList.add(dataSnapshot.getKey());
+                    }
+                    progressbar.setVisibility(View.GONE);
+                    recycleView.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
+                } else {
+                    recycleView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                }
+                showSchedule();
+            }
+
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+            private void showSchedule() {
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("emails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            RequestDonation bookingInformation = dataSnapshot.getValue(RequestDonation.class);
+
+                            for (String id : idList){
+                                if (bookingInformation.getCustomerName().equals(id)){
+                                    requestDonationList.add(bookingInformation);
+                                }
+
+                            }
+
+                        }
+                        requestDonationAdapter.notifyDataSetChanged();
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
+
+//        Intent intent = new Intent(DisplayActivity.this,SendEmailActivity.class);
+//        startActivity(intent);
     }
 
 //    private void readHospital() {

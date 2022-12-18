@@ -32,6 +32,10 @@ public class NotificationAdapter extends  RecyclerView.Adapter<NotificationAdapt
         this.context = context;
         this.notificationList = notificationList;
     }
+    public void setData(List<Notification> list){
+        this.notificationList=list;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -46,7 +50,7 @@ public class NotificationAdapter extends  RecyclerView.Adapter<NotificationAdapt
 
         holder.notification_text.setText(notification.getText());
         holder.notification_date.setText(notification.getDate());
-        
+        holder.notification_status.setText(notification.getStatus());
         getUserInfo(holder.notification_profile_image,holder.notification_name,notification.getSenderId());
 
 
@@ -61,7 +65,7 @@ public class NotificationAdapter extends  RecyclerView.Adapter<NotificationAdapt
     public  class ViewHolder extends RecyclerView.ViewHolder{
 
         public CircleImageView notification_profile_image;
-        public TextView notification_name, notification_text, notification_date;
+        public TextView notification_name, notification_text, notification_date,notification_status;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -71,6 +75,7 @@ public class NotificationAdapter extends  RecyclerView.Adapter<NotificationAdapt
             notification_name = itemView.findViewById(R.id.notification_name);
             notification_text = itemView.findViewById(R.id.notification_text);
             notification_date = itemView.findViewById(R.id.notification_date);
+            notification_status = itemView.findViewById(R.id.notification_status);
 
         }
     }

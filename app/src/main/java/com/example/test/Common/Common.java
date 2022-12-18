@@ -1,5 +1,7 @@
 package com.example.test.Common;
 
+import android.widget.Button;
+
 import com.example.test.Model.AllHospitals;
 import com.example.test.Model.Hospital;
 import com.example.test.Model.TimeSlot;
@@ -25,6 +27,7 @@ public class Common {
     public static SimpleDateFormat simpleFormat = new SimpleDateFormat("dd_MM_yyyy");
     public static String currentRecipient= null;
     public static int statusBooking;
+    public static String statusEmail = "Email";
 
     public static String convertTimeSLotToString(int slot) {
         switch (slot)

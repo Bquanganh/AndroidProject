@@ -1,8 +1,10 @@
 package com.example.test;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.test.Adapter.BookingAdapter;
 import com.example.test.Adapter.RequestDonationAdapter;
@@ -21,6 +24,7 @@ import com.example.test.Adapter.UserAdapter;
 import com.example.test.Model.BookingInformation;
 import com.example.test.Model.RequestDonation;
 import com.example.test.Model.User;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,8 +37,11 @@ import java.util.List;
 
 public class SendEmailActivity extends AppCompatActivity {
     private Toolbar toolbar;
+
     private RecyclerView recyclerView;
+    private TextView emptyView;
     public Button accept;
+
 
 
     List<String> idList;
@@ -58,6 +65,7 @@ public class SendEmailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+
         recyclerView = findViewById(R.id.recycleView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
@@ -67,6 +75,8 @@ public class SendEmailActivity extends AppCompatActivity {
         requestDonationList = new ArrayList<>();
         requestDonationAdapter = new RequestDonationAdapter(SendEmailActivity.this,requestDonationList);
         recyclerView.setAdapter(requestDonationAdapter);
+
+        emptyView = findViewById(R.id.empty_view);
         
         idList = new ArrayList<>();
         getIdOfUsers();
@@ -86,10 +96,19 @@ public class SendEmailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 idList.clear();
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                if (snapshot.exists())
+                {
+                    for (DataSnapshot dataSnapshot: snapshot.getChildren()){
 
-                    idList.add(dataSnapshot.getKey());
+                        idList.add(dataSnapshot.getKey());
+                    }
+                }else
+                {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
                 }
+
+
 
 
                 showSchedule();

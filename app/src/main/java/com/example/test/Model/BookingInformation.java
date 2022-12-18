@@ -1,13 +1,13 @@
 package com.example.test.Model;
 
 public class BookingInformation {
-    private  String customerName, customerPhone,customerEmail, time, hospitalName, hospitalId,hospitalAddress,customerId,recipientId,recipientName,recipientPhone;
+    private  String customerName, customerPhone,customerEmail, time, hospitalName, hospitalId,hospitalAddress,customerId,recipientId,recipientName,recipientPhone, status;
     private Long slot;
 
     public BookingInformation() {
     }
 
-    public BookingInformation(String customerName, String customerPhone, String time, String hospitalName, String hospitalId, String hospitalAddress, String customerId, String recipientId, String recipientName, String recipientPhone, Long slot, String customerEmail) {
+    public BookingInformation(String customerName, String customerPhone, String time, String hospitalName, String hospitalId, String hospitalAddress, String customerId,String status, String recipientId, String recipientName, String recipientPhone, Long slot, String customerEmail) {
         this.customerName = customerName;
         this.customerPhone = customerPhone;
         this.time = time;
@@ -20,6 +20,16 @@ public class BookingInformation {
         this.recipientPhone = recipientPhone;
         this.slot = slot;
         this.customerEmail =customerEmail;
+        this.status = status;
+
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getCustomerEmail() {
