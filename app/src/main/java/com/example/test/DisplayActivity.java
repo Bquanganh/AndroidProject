@@ -178,7 +178,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
 
                     if (type.equals("donor")){
                         nav_menu.findItem(R.id.sentEmail).setTitle("Received Emails");
-                        nav_menu.findItem(R.id.notifications).setVisible(true);
+                        nav_menu.findItem(R.id.notifications).setVisible(false);
                         nav_menu.findItem(R.id.sentEmail).setVisible(false);
                         nav_menu.findItem(R.id.bookingSchedule).setVisible(false);
                     }else
@@ -274,6 +274,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
         idList = new ArrayList<>();
 
 
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("emails")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         reference.addValueEventListener(new ValueEventListener() {
@@ -306,7 +307,7 @@ public class DisplayActivity extends AppCompatActivity implements  NavigationVie
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+                        requestDonationList.clear();
                         for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                             RequestDonation bookingInformation = dataSnapshot.getValue(RequestDonation.class);
 

@@ -219,94 +219,65 @@ public class BookingStep3Fragment extends Fragment {
             public void onClick(View view) {
 
                 if (idOfRecipient==null) {
-                    //Create booking information
-                    BookingInformation bookingInformation = new BookingInformation();
-                    Log.d("TestDatabase", hospital.getId());
-                    bookingInformation.setHospitalName(hospital.getName());
-                    bookingInformation.setHospitalId(hospital.getId());
-                    bookingInformation.setCustomerName(userSelected.getName());
-                    bookingInformation.setHospitalAddress(hospital.getAddress());
-                    bookingInformation.setCustomerId(userSelected.getId());
-                    bookingInformation.setTime(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
-                            .append(" at ")
-                            .append(simpleDateFormat.format(Common.currentDate.getTime())).toString());
-                    bookingInformation.setSlot(Long.valueOf(Common.currentTimeSlot));
-
-                    //Submit to hospital document
-                    DatabaseReference bookDate = FirebaseDatabase.getInstance().getReference()
-                            .child("hospitals").child(hospital.getId())
-                            .child(Common.simpleFormat.format(Common.currentDate.getTime()))
-                            .child(String.valueOf(Common.currentTimeSlot));
-                    // Write data
-                    bookDate.setValue(bookingInformation).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            new AlertDialog.Builder(view.getContext())
-                                    .setTitle("Confirm Information").setMessage("Do you want send mail to" + hospital.getName() + "?")
-                                    .setCancelable(false)
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    new AlertDialog.Builder(view.getContext())
+                            .setTitle("Confirm Information").setMessage("Do you want send mail to" + hospital.getName() + "?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                                            .child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    reference.addValueEventListener(new ValueEventListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                                                    .child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                            reference.addValueEventListener(new ValueEventListener() {
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            String nameOfSender = snapshot.child("name").getValue().toString();
+                                            String email = snapshot.child("email").getValue().toString();
+                                            String phone = snapshot.child("idNumber").getValue().toString();
+                                            String blood = snapshot.child("bloodGroup").getValue().toString();
+
+                                            String mEmail = hospital.getEmail();
+                                            String mSubject = "BLOOD DONATION";
+                                            String mMessage = "Hello " + hospital.getName() + ", " + nameOfSender + " would like blood donation from you. Here's his/her detail:\n"
+                                                    + "Name: " + nameOfSender + "\n" +
+                                                    "Phone Number: " + phone + "\n" +
+                                                    "Email: " + email + "\n" +
+                                                    "Blood Group: " + blood + "\n" +
+                                                    "Time slot: " + new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
+                                                    .append(" at ")
+                                                    .append(simpleDateFormat.format(Common.currentDate.getTime())) + "\n" +
+                                                    "Kindly Reach out to him/her. Thank you!\n" +
+                                                    "BLOOD DONATION APP -- DONATE BLOOD, SAVE LIVES";
+                                            javaMailApi JavaMaikApi = new javaMailApi(view.getContext(), mEmail, mSubject, mMessage);
+                                            JavaMaikApi.execute();
+
+                                            DatabaseReference senderRef = FirebaseDatabase.getInstance().getReference("emails")
+                                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                            senderRef.child(hospital.getId()).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    String nameOfSender = snapshot.child("name").getValue().toString();
-                                                    String email = snapshot.child("email").getValue().toString();
-                                                    String phone = snapshot.child("idNumber").getValue().toString();
-                                                    String blood = snapshot.child("bloodGroup").getValue().toString();
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DatabaseReference receiverRef = FirebaseDatabase.getInstance().getReference("hospitalEmails")
+                                                                .child(hospital.getId());
+                                                        receiverRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
 
-                                                    String mEmail = hospital.getEmail();
-                                                    String mSubject = "BLOOD DONATION";
-                                                    String mMessage = "Hello " + hospital.getName() + ", " + nameOfSender + " would like blood donation from you. Here's his/her detail:\n"
-                                                            + "Name: " + nameOfSender + "\n" +
-                                                            "Phone Number: " + phone + "\n" +
-                                                            "Email: " + email + "\n" +
-                                                            "Blood Group: " + blood + "\n" +
-                                                            "Time slot: " + new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
-                                                            .append(" at ")
-                                                            .append(simpleDateFormat.format(Common.currentDate.getTime())) + "\n" +
-                                                            "Kindly Reach out to him/her. Thank you!\n" +
-                                                            "BLOOD DONATION APP -- DONATE BLOOD, SAVE LIVES";
-                                                    javaMailApi JavaMaikApi = new javaMailApi(view.getContext(), mEmail, mSubject, mMessage);
-                                                    JavaMaikApi.execute();
-
-                                                    DatabaseReference senderRef = FirebaseDatabase.getInstance().getReference("emails")
-                                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                                    senderRef.child(hospital.getId()).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                DatabaseReference receiverRef = FirebaseDatabase.getInstance().getReference("hospitalEmails")
-                                                                        .child(hospital.getId());
-                                                                receiverRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
-
-                                                            }
-
-                                                        }
-                                                    });
-
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    }
 
                                                 }
                                             });
+
                                         }
-                                    })
-                                    .setNegativeButton("No", null)
-                                    .show();
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
 //                        getActivity().finish();// Close activity
-                            Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("AAAAa", hospital.getId());
                     //Create booking information
@@ -322,55 +293,39 @@ public class BookingStep3Fragment extends Fragment {
                     bookingInformation.setCustomerEmail(userSelected.getEmail());
                     bookingInformation.setRecipientId(userRecipient.getId());
                     bookingInformation.setRecipientPhone(userRecipient.getIdNumber());
+                    bookingInformation.setStatus("");
                     bookingInformation.setTime(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
                             .append(" at ")
                             .append(simpleDateFormat.format(Common.currentDate.getTime())).toString());
                     bookingInformation.setSlot(Long.valueOf(Common.currentTimeSlot));
 
-                    //Submit to hospital document
-                    DatabaseReference bookDate = FirebaseDatabase.getInstance().getReference()
-                            .child("hospitals").child(hospital.getId())
-                            .child(Common.simpleFormat.format(Common.currentDate.getTime()))
-                            .child(String.valueOf(Common.currentTimeSlot));
-                    // Write data
-                    bookDate.setValue(bookingInformation).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            new AlertDialog.Builder(view.getContext())
-                                    .setTitle("Confirm Information").setMessage("Do you want choose" + hospital.getName() + "and " + userRecipient.getName() + "?")
-                                    .setCancelable(false)
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    new AlertDialog.Builder(view.getContext())
+                            .setTitle("Confirm Information").setMessage("Do you want choose" + hospital.getName() + "and " + userRecipient.getName() + "?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    DatabaseReference senderRef = FirebaseDatabase.getInstance().getReference("emails")
+                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    senderRef.addValueEventListener(new ValueEventListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            DatabaseReference senderRef = FirebaseDatabase.getInstance().getReference("emails")
-                                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                            senderRef.addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    DatabaseReference inforBooking = FirebaseDatabase.getInstance().getReference("emails")
-                                                            .child(userRecipient.getId()).child(userSelected.getName());
-                                                    inforBooking.setValue(bookingInformation);
-                                                    addNotifications(userRecipient.getId(),userSelected.getId());
-                                                }
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            DatabaseReference inforBooking = FirebaseDatabase.getInstance().getReference("emails")
+                                                    .child(userRecipient.getId()).child(userSelected.getName());
+                                            inforBooking.setValue(bookingInformation);
 
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
 
-                                                }
-                                            });
                                         }
-                                    })
-                                    .setNegativeButton("No", null)
-                                    .show();
-                            Intent intent = new Intent(context,DisplayActivity.class);
-                            context.startActivity(intent);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
                 }
 
 

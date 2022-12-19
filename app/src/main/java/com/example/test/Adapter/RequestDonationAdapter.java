@@ -82,19 +82,23 @@ public class RequestDonationAdapter extends RecyclerView.Adapter<RequestDonation
         checkStatus.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getValue().equals("Confirm"))
+                if (snapshot.exists())
                 {
-                    holder.btn_confirm.setVisibility(View.GONE);
-                    holder.btn_refuse.setVisibility(View.GONE);
-                    holder.btn_status.setText("Completed");
-                    holder.btn_status.setVisibility(View.VISIBLE);
-                }else if(snapshot.getValue().equals("refused"))
-                {
-                    holder.btn_confirm.setVisibility(View.GONE);
-                    holder.btn_refuse.setVisibility(View.GONE);
-                    holder.btn_status.setText("Refused");
-                    holder.btn_status.setVisibility(View.VISIBLE);
+                    if(snapshot.getValue().equals("Confirm"))
+                    {
+                        holder.btn_confirm.setVisibility(View.GONE);
+                        holder.btn_refuse.setVisibility(View.GONE);
+                        holder.btn_status.setText("Completed");
+                        holder.btn_status.setVisibility(View.VISIBLE);
+                    }else if(snapshot.getValue().equals("refused"))
+                    {
+                        holder.btn_confirm.setVisibility(View.GONE);
+                        holder.btn_refuse.setVisibility(View.GONE);
+                        holder.btn_status.setText("Refused");
+                        holder.btn_status.setVisibility(View.VISIBLE);
+                    }
                 }
+
 
             }
 
@@ -130,7 +134,7 @@ public class RequestDonationAdapter extends RecyclerView.Adapter<RequestDonation
                 bookingInformation.setTime(new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
                         .append(" at ")
                         .append(simpleDateFormat.format(Common.currentDate.getTime())).toString());
-                bookingInformation.setSlot(Long.valueOf(Common.currentTimeSlot));
+                bookingInformation.setSlot(user.getSlot());
 
                 //Submit to hospital document
                 DatabaseReference bookDate = FirebaseDatabase.getInstance().getReference()
@@ -176,8 +180,9 @@ public class RequestDonationAdapter extends RecyclerView.Adapter<RequestDonation
                                                 holder.btn_refuse.setVisibility(View.GONE);
                                                 holder.btn_status.setText("Completed");
                                                 holder.btn_status.setVisibility(View.VISIBLE);
-                                                addNotifications(user.getCustomerId(),nameOfSender,"Accepted");
-
+                                                addNotifications(user.getCustomerId(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"Accepted");
+                                                FirebaseDatabase.getInstance().getReference("emails")
+                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(user.getCustomerName()).child("status").setValue("Confirm");
 
                                             }
 
@@ -244,8 +249,9 @@ public class RequestDonationAdapter extends RecyclerView.Adapter<RequestDonation
                                         holder.btn_refuse.setVisibility(View.GONE);
                                         holder.btn_status.setText("Refused");
                                         holder.btn_status.setVisibility(View.VISIBLE);
-                                        addNotifications(user.getCustomerId(),nameOfSender,"Refused");
-
+                                        addNotifications(user.getCustomerId(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"Refused");
+                                        FirebaseDatabase.getInstance().getReference("emails")
+                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(user.getCustomerName()).child("status").setValue("refused");
 
                                     }
 
