@@ -182,7 +182,10 @@ public class RequestDonationAdapter extends RecyclerView.Adapter<RequestDonation
                                                 holder.btn_status.setVisibility(View.VISIBLE);
                                                 addNotifications(user.getCustomerId(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"Accepted");
                                                 FirebaseDatabase.getInstance().getReference("emails")
-                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(user.getCustomerName()).child("status").setValue("Confirm");
+                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                        .child(user.getCustomerName())
+                                                        .child("status")
+                                                        .setValue("Confirm");
 
                                             }
 

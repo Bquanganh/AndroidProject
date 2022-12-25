@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,9 +25,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private TextView type, name, email, idNumber, bloodGroup;
+    private TextView type;
+    private TextView  name, email, idNumber, bloodGroup;
     private CircleImageView profileImage;
-    private Button backButton;
+    private Button btn_edit;
 
 
     @Override
@@ -47,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
         idNumber= findViewById(R.id.idNumber);
         bloodGroup= findViewById(R.id.bloodGroup);
         profileImage = findViewById(R.id.profileImage);
-        backButton = findViewById(R.id.backButton);
+        btn_edit = findViewById(R.id.btn_edit);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -76,12 +78,11 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
-        backButton.setOnClickListener(new View.OnClickListener() {
+        btn_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, DisplayActivity.class);
+                Intent intent = new Intent(ProfileActivity.this,EditProfileActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
     }
