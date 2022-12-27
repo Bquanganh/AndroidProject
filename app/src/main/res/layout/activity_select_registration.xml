@@ -75,6 +75,7 @@
 
                 <Button
                     android:id="@+id/hospitalButton"
+                    android:visibility="gone"
                     android:text="Hospital Registration"
                     android:textAllCaps="false"
                     android:layout_marginTop="10dp"
