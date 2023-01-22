@@ -180,7 +180,7 @@ public class RequestDonationAdapter extends RecyclerView.Adapter<RequestDonation
                                                 holder.btn_refuse.setVisibility(View.GONE);
                                                 holder.btn_status.setText("Completed");
                                                 holder.btn_status.setVisibility(View.VISIBLE);
-                                                addNotifications(user.getCustomerId(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"Accepted");
+                                                addNotifications(user.getCustomerId(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"Accepted",user.getHospitalId());
                                                 FirebaseDatabase.getInstance().getReference("emails")
                                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                                         .child(user.getCustomerName())
@@ -252,7 +252,7 @@ public class RequestDonationAdapter extends RecyclerView.Adapter<RequestDonation
                                         holder.btn_refuse.setVisibility(View.GONE);
                                         holder.btn_status.setText("Refused");
                                         holder.btn_status.setVisibility(View.VISIBLE);
-                                        addNotifications(user.getCustomerId(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"Refused");
+                                        addNotifications(user.getCustomerId(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"Refused",user.getHospitalId());
                                         FirebaseDatabase.getInstance().getReference("emails")
                                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(user.getCustomerName()).child("status").setValue("refused");
 
@@ -302,8 +302,23 @@ public class RequestDonationAdapter extends RecyclerView.Adapter<RequestDonation
         }
     }
 
-    private void  addNotifications(String receivedId, String senderId, String status){
+    private void  addNotifications(String receivedId, String senderId, String status, String hospitalId){
+        final String text; // check and set status of received
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("notifications").child(receivedId);
+        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child("notifications").child(hospitalId);
+        if (receivedId!=hospitalId){
+            if (status=="Accepted"){
+                String date = DateFormat.getDateInstance().format(new Date());
+                HashMap<String,Object> hashMap = new HashMap<>();
+                hashMap.put("receivedId",receivedId);
+                hashMap.put("senderId",senderId);
+                hashMap.put("text","Sent you an email, kindly check it out!");
+                hashMap.put("date",date);
+                hashMap.put("status","Scheduled");
+                reference1.push().setValue(hashMap);
+            }
+
+        }
         String date = DateFormat.getDateInstance().format(new Date());
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("receivedId",receivedId);
