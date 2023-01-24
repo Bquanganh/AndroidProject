@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -54,6 +55,7 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
     private NonSwoperViewPager viewPager;
     private String hospitalId,idOfRecipient;
     private BookingDonationActivity bookingDonationActivity;
+    private ProgressDialog loader;
 
      public List<Hospital> list;
     public User user;
@@ -97,6 +99,7 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_for2_users);
         Intent intent = getIntent();
+        loader = new ProgressDialog(this);
 
 
         hospitalId = intent.getStringExtra("hospitalId");
@@ -183,11 +186,13 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
         }
             }
             private void loadTimeSchedule(String hospitalID) {
+
                 Intent i = new Intent( Common.KEY_DISPLAY_TIME_SLOT);
                 localBroadcastManager.sendBroadcast(i);
             }
 
             private void confirmBooking() {
+
                 Intent i = new Intent(Common.KEY_CONFIRM_BOOKING);
                 localBroadcastManager.sendBroadcast(i);
             }
@@ -234,6 +239,7 @@ public class BookingFor2UsersActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
+                Common.step=0;
                 finish();
                 return  true;
             default:

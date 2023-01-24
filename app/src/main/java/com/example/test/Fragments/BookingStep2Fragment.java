@@ -1,5 +1,6 @@
 package com.example.test.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +57,8 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
     private BookingFor2UsersActivity bookingFor2UsersActivity;
     private  String hospitalId;
 
+    private ProgressDialog loader;
+
     Calendar selected_date;
 
     Unbinder unbinder;
@@ -67,6 +70,9 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
 
 
     private void loadAvailableTimeSlotOfHospital(String id, String date) {
+        loader.setMessage("Loading...");
+        loader.setCanceledOnTouchOutside(false);
+        loader.show();
         Log.d("Aaa",date);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                 .child("hospitals").child(id);
@@ -127,6 +133,7 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         timeSlotLoadListener =this;
+        loader = new ProgressDialog(getContext());
 
 
         simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy");
@@ -188,16 +195,19 @@ public class BookingStep2Fragment extends Fragment implements TimeSlotLoadListen
     public void onTimeSlotLoadSuccess(List<TimeSlot> timeSlotList) {
         MyTimeSlotAdapter adapter = new MyTimeSlotAdapter(getContext(),timeSlotList);
         recycle_time_slot.setAdapter(adapter);
+        loader.dismiss();
     }
 
     @Override
     public void onTimeSlotLoadFailed(String message) {
         Toast.makeText(getContext(),message,Toast.LENGTH_SHORT).show();
+        loader.dismiss();
     }
 
     @Override
     public void onTimeSlotLoadEmpty() {
         MyTimeSlotAdapter adapter = new MyTimeSlotAdapter(getContext());
         recycle_time_slot.setAdapter(adapter);
+        loader.dismiss();
     }
 }

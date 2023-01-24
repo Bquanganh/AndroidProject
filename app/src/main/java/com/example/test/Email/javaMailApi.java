@@ -3,11 +3,14 @@ package com.example.test.Email;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.example.test.DisplayActivity;
 import com.example.test.R;
 import com.sun.mail.dsn.MessageHeaders;
 

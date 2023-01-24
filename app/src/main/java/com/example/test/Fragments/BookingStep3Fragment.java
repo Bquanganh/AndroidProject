@@ -1,6 +1,8 @@
 package com.example.test.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -67,7 +69,7 @@ public class BookingStep3Fragment extends Fragment {
     private BookingDonationActivity bookingDonationActivity;
     private String idOfRecipient;
     private  String hospitalID;
-
+    private ProgressDialog loader;
 
 
 
@@ -95,6 +97,9 @@ public class BookingStep3Fragment extends Fragment {
 
             txt_hospital_name.setText(hospital.getName());
         }
+        loader.setMessage("Loading...");
+        loader.setCanceledOnTouchOutside(false);
+        loader.show();
         Log.e("AAAAAA",hospitalID);
         txt_booking_location_text.setText(userRecipient.getName());
         txt_hospital_phone_text.setText(hospital.getIdNumber());
@@ -106,6 +111,7 @@ public class BookingStep3Fragment extends Fragment {
         txt_hospital_web.setText(hospital.getEmail());
 
         txt_hospital_name.setText(hospital.getName());
+        loader.dismiss();
 
     }
 
@@ -126,6 +132,7 @@ public class BookingStep3Fragment extends Fragment {
         localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
         localBroadcastManager.registerReceiver(confirmBookingReceive,new IntentFilter(Common.KEY_CONFIRM_BOOKING));
         bookingFor2UsersActivity = (BookingFor2UsersActivity) getActivity();
+        loader = new ProgressDialog(getContext());
 
          hospitalID = bookingFor2UsersActivity.getHospitalId();
 
@@ -220,7 +227,7 @@ public class BookingStep3Fragment extends Fragment {
 
                 if (idOfRecipient==null) {
                     new AlertDialog.Builder(view.getContext())
-                            .setTitle("Confirm Information").setMessage("Do you want send mail to" + hospital.getName() + "?")
+                            .setTitle("Confirm Information").setMessage("Do you want send mail to " +" "+ hospital.getName() + " ?")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
@@ -265,6 +272,8 @@ public class BookingStep3Fragment extends Fragment {
                                                 }
                                             });
 
+
+
                                         }
 
                                         @Override
@@ -279,7 +288,7 @@ public class BookingStep3Fragment extends Fragment {
 //                        getActivity().finish();// Close activity
                     Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d("AAAAa", hospital.getId());
+                    Log.d("AAAAa", idOfRecipient);
                     //Create booking information
                     BookingInformation bookingInformation = new BookingInformation();
                     Log.d("TestDatabase", hospital.getId());
@@ -300,20 +309,54 @@ public class BookingStep3Fragment extends Fragment {
                     bookingInformation.setSlot(Long.valueOf(Common.currentTimeSlot));
 
                     new AlertDialog.Builder(view.getContext())
-                            .setTitle("Confirm Information").setMessage("Do you want choose" + hospital.getName() + "and " + userRecipient.getName() + "?")
+                            .setTitle("Confirm Information").setMessage("Do you want choose " + " "+hospital.getName() + " and " + " "+ userRecipient.getName() + " ?")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    DatabaseReference senderRef = FirebaseDatabase.getInstance().getReference("emails")
+                                    DatabaseReference senderRef = FirebaseDatabase.getInstance().getReference("users")
                                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
                                     senderRef.addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            DatabaseReference inforBooking = FirebaseDatabase.getInstance().getReference("emails")
-                                                    .child(userRecipient.getId()).child(userSelected.getName());
-                                            inforBooking.setValue(bookingInformation);
+                                            String nameOfSender = snapshot.child("name").getValue().toString();
+                                            String email = snapshot.child("email").getValue().toString();
+                                            String phone = snapshot.child("idNumber").getValue().toString();
+                                            String blood = snapshot.child("bloodGroup").getValue().toString();
 
+                                            String mEmail = userRecipient.getEmail();
+                                            String mSubject = "BLOOD DONATION";
+                                            String mMessage = "Hello " + userRecipient.getName() + ", " + nameOfSender + " would like blood donation from you. Here's his/her detail:\n"
+                                                    + "Name: " + nameOfSender + "\n" +
+                                                    "Phone Number: " + phone + "\n" +
+                                                    "Email: " + email + "\n" +
+                                                    "Blood Group: " + blood + "\n" +
+                                                    "Time slot: " + new StringBuilder(Common.convertTimeSLotToString(Common.currentTimeSlot))
+                                                    .append(" at ")
+                                                    .append(simpleDateFormat.format(Common.currentDate.getTime())) + "\n" +
+                                                    "Kindly Reach out to him/her. Thank you!\n" +
+                                                    "BLOOD DONATION APP -- DONATE BLOOD, SAVE LIVES";
+                                            javaMailApi JavaMaikApi = new javaMailApi(view.getContext(), mEmail, mSubject, mMessage);
+                                            JavaMaikApi.execute();
+
+
+                                            DatabaseReference senderRef = FirebaseDatabase.getInstance().getReference("emails")
+                                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                            senderRef.child(hospital.getId()).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DatabaseReference receiverRef = FirebaseDatabase.getInstance().getReference("emails")
+                                                                .child(userRecipient.getId()).child(userSelected.getName());
+                                                        receiverRef.setValue(bookingInformation);
+
+
+
+                                                    }
+
+                                                }
+                                            });
 
                                         }
 
@@ -322,10 +365,14 @@ public class BookingStep3Fragment extends Fragment {
 
                                         }
                                     });
+
+
                                 }
                             })
                             .setNegativeButton("No", null)
                             .show();
+
+
                 }
 
 
