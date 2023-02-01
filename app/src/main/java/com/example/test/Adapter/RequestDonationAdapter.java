@@ -175,6 +175,30 @@ public class RequestDonationAdapter extends RecyclerView.Adapter<RequestDonation
                                                         "BLOOD DONATION APP -- DONATE BLOOD, SAVE LIVES";
                                                 javaMailApi JavaMaikApi = new javaMailApi(context,mEmail,mSubject,mMessage);
                                                 JavaMaikApi.execute();
+                                                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference()
+                                                        .child("users").child(user.getHospitalId());
+                                                reference1.addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        String hEmail = snapshot.child("email").getValue().toString();
+                                                        String hSubject = "BLOOD DONATION";
+                                                        String hMessage = "Hello " + user.getHospitalName()+ ", "+nameOfSender+" and "+user.getCustomerName()+" have an appointment at the hospital:\n"
+                                                                +" and this is an appointment details : \n"
+                                                                + "Name: "+nameOfSender+" and "+user.getCustomerName()+"\n"+
+                                                                "Blood Group: "+blood +"\n"+
+                                                                "Time: " + user.getTime() +"\n"+
+                                                                "Thank you!\n"+
+                                                                "BLOOD DONATION APP -- DONATE BLOOD, SAVE LIVES";
+                                                        javaMailApi JavaMaikApi1 = new javaMailApi(context,hEmail,hSubject,hMessage);
+                                                        JavaMaikApi1.execute();
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+
 
                                                 holder.btn_confirm.setVisibility(View.GONE);
                                                 holder.btn_refuse.setVisibility(View.GONE);
